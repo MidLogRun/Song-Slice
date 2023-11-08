@@ -1,57 +1,56 @@
-# Reading Recovery App - README
+# Song Slice - README
 
 ## Introduction
 
-Welcome to Reading Recovery, a revolutionary app designed for book enthusiasts to rate, review, and engage in thoughtful discussions about their favorite reads. This app aims to create a vibrant community where users can connect, discover new books, and share their literary experiences.
+Welcome to Song Slice, an app designed for music enthusiasts to rate, review, and discuss their favorite songs. This app aims to not only help you find your favorite song but also help you connect with a community of others who enjoy the same music.
 
 ## Features
 
-### 1. User-friendly Interface
+### 1. Ratings
 
-Reading Recovery boasts an intuitive and user-friendly interface, making it easy for users to navigate and explore the app's functionalities. Whether you're a seasoned bookworm or a casual reader, the app provides a seamless experience for all.
+Users can upvote or downvote any song, and you can see what percentage of people liked any song. This helps you get an overall opinion of people's thoughts before listening to the song or reading the comments.
 
-### 2. Book Ratings
+### 3. Reviews
 
-Users can rate books on a scale of 1 to 5 stars, providing a quick and visual way to express their overall satisfaction with a particular title. The average rating is displayed prominently, allowing others to gauge the book's popularity at a glance.
+Once you are done listening to a song, you can have conversations with others about what you thought about the song in the comment section below each song. This is a great place to join a community of others who enjoy the same songs.
 
-### 3. Detailed Reviews
+### 4. Song Discovery
 
-Express your thoughts in detail through personalized reviews. Share your insights on the plot, characters, writing style, and any other aspects that stood out to you. Engage with the community by commenting on and liking reviews, fostering meaningful discussions.
+Discover songs based on the most popular songs of the week in the discovery section. This is a great way to find new songs and make new friends.
 
-### 4. Book Discovery
+### 5. Library
 
-Discover new books based on personalized recommendations generated from your reading history and preferences. The app employs a robust recommendation algorithm to suggest titles that align with your tastes, ensuring you always have a captivating read on your radar.
+You can save your favorite songs in your library for easy access later. This can be especially useful if you are conversing with someone in the comments of one of your favorite songs.
 
-### 5. Social Connectivity
+### 6. Spotify Integration
 
-Connect with fellow readers, follow friends, and explore their reading lists. Share your favorite books on social media platforms directly from the app, expanding the Reading Recovery community and introducing literature to a broader audience.
+Go to any song on Spotify with the click of a button and listen to any of the songs for free. no need to bust out the wallet!
+(of course, Apple Music is better... but you know. you get what you pay for)
 
-### 6. Bookshelf Organization
 
-Effortlessly organize your virtual bookshelf by categorizing books into genres, read and to-read lists, and favorites. The app allows users to track their reading progress, set reading goals, and maintain a comprehensive record of their literary journey.
 
 ## Getting Started
 
 1. **Create an Account:**
-   - Download the app from your preferred app store.
-   - Sign up using your email or social media accounts.
+   - Navigate to the webpage online
+   - Sign up using your email, username, and password.
 
 2. **Explore and Rate:**
-   - Browse through a vast collection of books.
-   - Rate and review books you've read.
+   - Browse through a vast collection of songs.
+   - Rate and review songs you've listened to.
 
 3. **Connect and Share:**
-   - Follow friends and fellow readers.
-   - Share your reading achievements and recommendations.
+   - Follow friends and fellow music enjoyers.
+   - Share your favorite songs with others.
 
 4. **Discover New Reads:**
-   - Receive personalized book recommendations.
-   - Explore trending books within the Reading Recovery community.
+   - Explore top-rated songs of the week
+   - widen your horizon by listening to something new
 
 ## Feedback and Support
 
-We value your feedback! If you encounter any issues, have suggestions, or simply want to share your excitement about Reading Recovery, please reach out to our support team at support@readingrecoveryapp.com.
+Please submit an issue on GitHub with any feedback, and we will try to fix it as soon as we can.
 
-Happy reading!
 
-The Reading Recovery Team
+
+The Song Slice Team

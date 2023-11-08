@@ -24,8 +24,8 @@ You can save your favorite songs in your library for easy access later. This can
 
 ### 6. Spotify Integration
 
-Go to any song on Spotify with the click of a button and listen to any of the songs for free. no need to bust out the wallet!
-(of course, Apple Music is better... but you know. you get what you pay for)
+Go to any song on Spotify with the click of a button and listen to any song for free. No need to bust out the wallet!
+(of course, Apple Music is better... but you know. You get what you pay for)
 
 
 
@@ -45,11 +45,11 @@ Go to any song on Spotify with the click of a button and listen to any of the so
 
 4. **Discover New Reads:**
    - Explore top-rated songs of the week
-   - widen your horizon by listening to something new
+   - Widen your horizon by listening to something new
 
 ## Feedback and Support
 
-Please submit an issue on GitHub with any feedback, and we will try to fix it as soon as we can.
+Please submit an issue on GitHub with any feedback, and we will try to fix it as soon as possible.
 
 
 

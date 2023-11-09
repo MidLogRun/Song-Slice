@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Welcome to Song Slice, an app designed for music enthusiasts to rate, review, and discuss their favorite songs. This app aims to not only help you find your favorite song but also help you connect with a community of others who enjoy the same music.
+Song Slice is an app designed for music enthusiasts to rate, review, and discuss their favorite songs. This app aims not only to help you find your favorite song but also to help you connect with a community of others who enjoy the same music.
 
 ## Features
 

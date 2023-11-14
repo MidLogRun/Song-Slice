@@ -1,0 +1,14 @@
+.verticle-container {
+
+display: flex;
+flex-direction: column;
+align-items: center;
+
+}
+
+#button{
+
+    background-color: #FF0077;
+    border-radius: 5px;
+
+}

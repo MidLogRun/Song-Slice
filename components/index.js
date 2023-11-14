@@ -4,10 +4,10 @@ const app = express();
 const pgp = require('pg-promise')(); //
 const bodyParser = require('body-parser');
 const session = require('express-session');
-const bcrypt = require('bcrypt');
-const axios = require('axios');
-const { localsName } = require('ejs');
-const { application } = require('express');
+//const bcrypt = require('bcrypt');
+//const axios = require('axios');
+// const { localsName } = require('ejs');
+// const { application } = require('express');
 const port = 3000;
 
 
@@ -17,8 +17,8 @@ const dbConfig = {
   host: 'db', // the database server
   port: 5432, // the database port
   database: process.env.POSTGRES_DB, // the database name
-  // user: process.env.POSTGRES_USER, // the user account to connect with
-  // password: process.env.POSTGRES_PASSWORD, // the password of the user account
+  user: process.env.POSTGRES_USER, // the user account to connect with
+  password: process.env.POSTGRES_PASSWORD, // the password of the user account
 };
 
 const db = pgp(dbConfig);

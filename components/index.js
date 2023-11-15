@@ -63,7 +63,55 @@ const path = require('path');
 //** ^^^^^^^^^^^^^ */
 
 
+//*************** /
+// API Routes:
+//************** */
 
+//***********************REGISTER */
+// register GET routine:
+app.get('/register', (req, res) =>
+{
+  // res.render('register'); //not sure the correct path to register (ie: pages/register)
+});
+
+// register POST routine:
+app.post('/register', async (req, res) =>
+{
+  //  const userPassword = req.body.password;
+  // const username = req.body.username;
+
+  // if (!userPassword)
+  // {
+  //  return res.render('pages/register', { message: 'You need to enter a password'}); //correct path is?
+  // }
+
+  // if (!username)
+  // {
+  //  return res.render('pages/register', { message: 'You need to enter a username'}); //correct path is?
+  // }
+
+  // try {
+  //   const saltRounds = 10;
+  //   console.log("user password is: " + userPassword);
+  //   const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
+
+  //   const insertUser = 'INSERT INTO users (username, password) VALUES ($1, $2)'; // SQL Query to insert user
+
+  //   //insert the user into database
+  //   const result = await db.none(insertUser, [
+  //     username,
+  //     hashWord
+  //   ]);
+
+  //   res.render('pages/login'); //redirect the user to login
+
+  // } catch (error) {
+  //   console.error('Error saving user info: ', error);
+  //   res.render('pages/register',{error})
+  // }
+});
+
+//***********************LOGIN */
 
 // login GET routine:
 app.get('/', (req, res) => {
@@ -83,7 +131,42 @@ app.post('/login', async (req, res) =>
   {
 
   }
-})
+});
+
+//***********************LOGOUT */
+
+//Logout GET routine:
+app.get('/logout', (req, res) =>
+{
+  let message = 'You cannot log out if you cannot logged in.';
+  // if (req.session)
+  // {
+  //   message = 'You have logged out.';
+  //   //delete session object if exists
+  //   req.session.destroy();
+
+  //   res.render('pages/login', {message});
+  // }
+
+  // res.render('pages/login', {
+  //   message
+  // });
+
+});
+
+
+//Home page (only works when we have spotify API):
+app.get('/home', async (req, res) =>
+{
+  try
+  {
+
+  } catch (error)
+  {
+
+  }
+});
+
 
 
 

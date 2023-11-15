@@ -7,10 +7,10 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-//const bcrypt = require('bcrypt'); //  To hash passwords
-//const axios = require('axios'); // To make HTTP requests from our server.
-// const { localsName } = require('ejs');
-// const { application } = require('express');
+const bcrypt = require('bcrypt'); //  To hash passwords
+const axios = require('axios'); // To make HTTP requests from our server.
+const { localsName } = require('ejs');
+const { application } = require('express');
 const port = 3000;
 
 
@@ -129,7 +129,7 @@ app.post('/login', async (req, res) =>
   } catch (error)
   {
      console.error('Error during login', error);
-     res.status(500).json({ message: 'Login failed' });
+     res.status(500).json({ message: 'Login failed (Entered catch block)' });
   }
 });
 

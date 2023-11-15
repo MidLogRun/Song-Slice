@@ -6,7 +6,12 @@ align-items: center;
 
 }
 
-#button{
+.btn {
+    background-color: #FF0077;
+    border-radius: 5px;
+}
+
+.btn btn-primary{
 
     background-color: #FF0077;
     border-radius: 5px;

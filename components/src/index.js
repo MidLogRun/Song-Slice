@@ -73,92 +73,76 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-// Login - GET route
-app.get('/login', (req, res) => {
-  res.render('pages/login');
-});
+
 
 // Redirect root URL to /login
 app.get('/', (req, res) => {
     res.redirect('/login');
 });
 
+
+
+// //***********************LOGIN */
+// Login - GET route
+app.get('/login', (req, res) => {
+  res.render('pages/login');
+});
+
+
+// login POST routine:
+app.post('/login', async (req, res) =>
+{
+  const username = req.body.username;
+  const password = req.body.password;
+
+  const userQuery = 'SELECT * FROM user WHERE username = $1';
+
+  try
+  {
+    if (!username || !password)
+    {
+      return res.render('pages/login', { message: 'Username and password are both required for login' });
+    }
+
+    const user = await db.oneOrNone(userQuery, [username]);
+
+    if (!user)
+    {
+      //if username is not in DB:
+      console.log("Username not found");
+      return res.render('pages/login', { message: 'Username provided was not found. Please try again or register by clicking the link below!' });
+    }
+
+    const passValid = await bcrypt.compare(password, user.password);
+    if (!passValid)
+    {
+      return res.render('pages/login', { message: 'Password is invalid' });
+    }
+
+    req.session.user = user;
+    req.session.save();
+
+
+    return res.redirect('pages/home');
+
+
+  } catch (error)
+  {
+     console.error('Error during login', error);
+     res.status(500).json({ message: 'Login failed' });
+  }
+});
+
+
+// //***********************REGISTER */
 // Register - GET route
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
 
-// // Register - POST route
-// app.post('/register', async (req, res) => {
-//   try {
-//     // Hash the password using bcrypt library
-//     const hash = await bcrypt.hash(req.body.password, 10);
 
 
-//     // Insert username and hashed password into the 'users' table
-//     // Assuming you have a 'users' table and a 'db' object connected to your database
-//     await db.none('INSERT INTO users(username, password) VALUES($1, $2)', [req.body.username, hash]);
 
-//     // Redirect to GET /login route page after data has been inserted successfully
-//     res.render('pages/login');
-//   } catch (error) {
-//     // If the insert fails, redirect to GET /register route
-//     console.error('Error during registration:', error);
-//     res.redirect('/register');
-//   }
-// });
-
-// // Login - POST route
-// app.post('/login', async (req, res) => {
-//   try {
-//     // Find the user from the users table where the username is the same as the one entered by the user
-//     const user = await db.oneOrNone('SELECT * FROM users WHERE username = $1', [req.body.username]);
-
-//     // If the user is not found in the table, redirect to GET /register route
-//     if (!user) {
-//       throw new Error('Incorrect username or password.');
-//     }
-
-//     // Use bcrypt.compare to compare if the entered password is the same as the registered one
-//     const match = await bcrypt.compare(req.body.password, user.password);
-
-//     // If the password is incorrect, throw an error stating "Incorrect username or password."
-//     if (!match) {
-//       throw new Error('Incorrect username or password.');
-//     }
-
-//     // Save the user in the session variable
-//     req.session.user = user;
-//     req.session.save();
-
-//     // If the user is found, redirect to /discover route after setting the session
-//     res.redirect('/discover');
-//   } catch (error) {
-//     // If the database request fails or the credentials are incorrect, send an appropriate message to the user and render the login.ejs page
-//     console.error('Error during login:', error.message);
-//     res.redirect('/login');
-//   }
-// });
-
-
-// //***********************LOGIN */
-// // login POST routine:
-// app.post('/login', async (req, res) =>
-// {
-//   const username = req.body.username;
-//   const password = req.body.password;
-
-//   try
-//   {
-
-//   } catch (error)
-//   {
-
-//   }
-// });
-
-
-// //***********************REGISTER */
 // // register POST routine:
 // app.post('/register', async (req, res) =>
 // {

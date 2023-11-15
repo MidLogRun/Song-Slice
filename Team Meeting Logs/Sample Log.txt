@@ -1,4 +1,4 @@
-Meeting Log: Project "Song Sloce" - Creating the Ultimate Music Rating Website
+Meeting Log: Project "Song Slice" - Creating the Ultimate Music Rating Website
 
 Date: November 15, 2023
 
@@ -18,9 +18,9 @@ Icebreaker question: What's your all-time favorite song and why?
 Meeting kicks off with laughter and a sense of camaraderie.
 
 Project Overview (10 minutes):
-Recap of the project vision: Creating "Song Sloce," a groundbreaking music rating website.
+Recap of the project vision: Creating "Song Slice," a groundbreaking music rating website.
 Discussing the core features: user profiles, song ratings, comments, and personalized recommendations.
-Excitement builds as the team envisions the impact of Song Sloce on the music community.
+Excitement builds as the team envisions the impact of Song Slice on the music community.
 
 Brainstorming Session (20 minutes):
 Open floor for ideas on website design, color scheme, and logo.
@@ -57,7 +57,7 @@ Team members collaborate to develop strategies for overcoming potential hurdles.
 
 Closing Remarks (5 minutes):
 Recap of key decisions and action items.
-Trey expresses confidence in the team's ability to make Song Sloce a success.
+Trey expresses confidence in the team's ability to make Song Slice a success.
 All members express enthusiasm and commitment to the project.
 Meeting concludes on a positive note, with the team eager to dive into their respective tasks.
 
@@ -65,4 +65,4 @@ Next Steps:
 
 Individual research and preparation for the assigned tasks.
 Weekly check-ins to track progress and address any challenges.
-The excitement is palpable as the team embarks on the journey to make Song Sloce a reality!
+The excitement is palpable as the team embarks on the journey to make Song Slice a reality!

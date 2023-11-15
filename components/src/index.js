@@ -142,18 +142,6 @@ app.get('/register', (req, res) => {
 
 
 // //***********************LOGIN */
-
-// // login GET routine:
-// app.get('/', (req, res) => {
-//   res.redirect('login');
-// });
-
-// // Login - GET route
-// app.get('/login', (req, res) => {
-//   res.render('pages/login');
-// });
-
-
 // // login POST routine:
 // app.post('/login', async (req, res) =>
 // {
@@ -171,12 +159,6 @@ app.get('/register', (req, res) => {
 
 
 // //***********************REGISTER */
-// // register GET routine:
-// app.get('/register', (req, res) =>
-// {
-//   // res.render('register'); //not sure the correct path to register (ie: pages/register)
-// });
-
 // // register POST routine:
 // app.post('/register', async (req, res) =>
 // {

@@ -8,7 +8,7 @@ Song Slice is an app designed for music enthusiasts to rate, review, and discuss
 
 ### 1. Ratings
 
-Users can upvote or downvote any song, and you can see what percentage of people liked any song. This helps you get an overall opinion of people's thoughts before listening to the song or reading the comments.
+Users can rate any song out of five stars, and you can see what percentage of people liked any song. This helps you get an overall opinion of people's thoughts before listening to the song or reading the comments.
 
 ### 2. Reviews
 
@@ -26,8 +26,6 @@ You can save your favorite songs in your library for easy access later. This can
 
 Go to any song on Spotify with the click of a button and listen to any song for free. No need to bust out the wallet!
 (of course, Apple Music is better... but you know. You get what you pay for)
-
-
 
 ## Getting Started
 
@@ -50,7 +48,5 @@ Go to any song on Spotify with the click of a button and listen to any song for 
 ## Feedback and Support
 
 Please submit an issue on GitHub with any feedback, and we will try to fix it as soon as possible.
-
-
 
 The Song Slice Team

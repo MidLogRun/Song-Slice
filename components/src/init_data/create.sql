@@ -43,5 +43,5 @@ CREATE TABLE review_to_release(
 CREATE TABLE review_to_user(
     review_id INT,
     user_id INT,
-    isReviewed BOOLEAN(0)
+    isReviewed BIT(1)
 );

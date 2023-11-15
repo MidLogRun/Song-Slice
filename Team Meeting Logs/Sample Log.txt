@@ -105,6 +105,26 @@ User Acceptance Testing:
 
 Questions:
     Is our current directory on-track to meet reqs?
-    We are trying to apply styling to
+    We are trying to apply styling
 
 
+
+Meeting 2 with Shirpah
+    -Good: 
+    -To Dos: before fall break; story board detailed, assignees, user acceptance criteria,
+            user acceptance document
+            look at UAD templates for testing/creating an account
+                -need another collumn for them - acceptance criteria (specify what is expected for that scenerio - throw error if unsuccessful)
+                -another collumn - test scenerio with automated test 
+            
+              UAD document in tabular form
+
+            "create a simple app that works well. start simple. make sure it all works well"
+
+            with init data ins/create - have drop tables (with nodemon)
+            that way when testing with nodemon it refreshes our data
+            
+  
+    -answers to questions asked:
+        -how to access or go about providing a URL?
+            -provide a local host URL

@@ -1,0 +1,68 @@
+Meeting Log: Project "Song Sloce" - Creating the Ultimate Music Rating Website
+
+Date: November 15, 2023
+
+Meeting Objective: Brainstorming and Planning Phase
+
+Meeting Attendees:
+
+Trey V.
+Chris D.
+Matt L.
+Lilia G.
+Agenda:
+
+Introduction and Icebreaker (5 minutes):
+Brief introduction of team members.
+Icebreaker question: What's your all-time favorite song and why?
+Meeting kicks off with laughter and a sense of camaraderie.
+
+Project Overview (10 minutes):
+Recap of the project vision: Creating "Song Sloce," a groundbreaking music rating website.
+Discussing the core features: user profiles, song ratings, comments, and personalized recommendations.
+Excitement builds as the team envisions the impact of Song Sloce on the music community.
+
+Brainstorming Session (20 minutes):
+Open floor for ideas on website design, color scheme, and logo.
+Trey suggests a sleek, minimalist design with a user-friendly interface.
+Chris proposes incorporating vibrant colors to make the website visually appealing.
+Matt emphasizes the importance of a memorable logo that reflects the essence of music.
+Whiteboard fills up with doodles and color schemes as creativity flows.
+
+Feature Prioritization (15 minutes):
+Prioritize features based on importance and feasibility.
+Lilia suggests starting with essential features like user registration, song search, and rating.
+Trey emphasizes the need for a robust recommendation algorithm to keep users engaged.
+Team members engage in a lively debate, weighing the pros and cons of each feature.
+
+Task Assignment (10 minutes):
+Breakdown of tasks for the next sprint.
+Chris takes on the responsibility of designing the website layout.
+Matt focuses on backend development and database design.
+Lilia volunteers for the recommendation algorithm implementation.
+Trey oversees the overall project management.
+Roles and responsibilities are clarified, ensuring everyone knows their contribution to the project.
+
+Timeline and Milestones (15 minutes):
+Setting short-term and long-term goals.
+Aim to have a prototype ready for internal testing in four weeks.
+Lilia suggests incorporating user feedback and making iterative improvements.
+The team establishes a realistic timeline, keeping in mind the importance of user feedback.
+
+Potential Challenges and Contingency Plans (10 minutes):
+Identifying possible obstacles and planning for contingencies.
+Chris raises concerns about potential server issues and suggests cloud-based solutions.
+Matt discusses the importance of regular backups to avoid data loss.
+Team members collaborate to develop strategies for overcoming potential hurdles.
+
+Closing Remarks (5 minutes):
+Recap of key decisions and action items.
+Trey expresses confidence in the team's ability to make Song Sloce a success.
+All members express enthusiasm and commitment to the project.
+Meeting concludes on a positive note, with the team eager to dive into their respective tasks.
+
+Next Steps:
+
+Individual research and preparation for the assigned tasks.
+Weekly check-ins to track progress and address any challenges.
+The excitement is palpable as the team embarks on the journey to make Song Sloce a reality!

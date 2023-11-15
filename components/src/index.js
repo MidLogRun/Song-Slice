@@ -123,13 +123,41 @@ app.post('/login', async (req, res) =>
 {
   const username = req.body.username;
   const password = req.body.password;
+  const userQuery = 'SELECT * FROM user WHERE username = $1';
 
-  try
-  {
+  try {
+    //User enters nothing for either field:
+    if (!username || !password)
+    {
+      return res.render('pages/login', { message: 'Username and password are required!' }); //go back to login
+    }
 
-  } catch (error)
-  {
+    const user = await db.oneOrNone(userQuery, [username]); //query the db for user that matches username
 
+    //provided username doesn't exist in the db:
+    if (!user)
+    {
+      console.log("Username not found!");
+      return res.render('pages/login', { message: 'Username not found' }); //go back to login
+    }
+
+    const passwordValid = await bcrypt.compare(password, user.password); //either returns a password or null
+
+    if (!passwordValid)
+    {
+      res.render('pages/login', { message: 'Please enter a valid password' });
+      return;
+    }
+    else //the password is valid and user can login
+    {
+      req.session.user = user;
+      req.session.save();
+
+      //res.redirect('/home');
+    }
+  } catch (error) {
+    console.error('Error during login', error);
+    res.render('pages/login', { message: error });
   }
 });
 

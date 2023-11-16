@@ -108,7 +108,7 @@ app.post('/login', async (req, res) =>
     const user = await db.oneOrNone(userQuery, [usrname]);
 
     console.log('Attempting login for username:', usrname);
-    console.log('Hashed Password:', user.password);
+
 
     if (!user)
     {

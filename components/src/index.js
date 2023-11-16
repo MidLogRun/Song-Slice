@@ -180,7 +180,7 @@ app.post('/register', async (req, res) =>
     ]);
 
     console.log("User registered successfully.");
-    res.render('pages/login'); //redirect the user to login
+    res.render('pages/home'); //redirect the user to login
 
   } catch (error) {
     console.error('Error saving user info: ', error);
@@ -190,12 +190,17 @@ app.post('/register', async (req, res) =>
 
 // //***********************HOME */
 app.get('/home', (req, res) => {
-  res.render('pages/home');
+  try
+  {
+    res.render('pages/home');
+  } catch (error) {
+    console.error('Error saving user info: ', error);
+  }
 });
 
-app.post('/register', (req, res) => {
+// app.post('/home', (req, res) => {
 
-});
+// });
 
 
 // //***********************LOGOUT */

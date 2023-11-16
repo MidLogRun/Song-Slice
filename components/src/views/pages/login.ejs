@@ -5,20 +5,17 @@
     <h2 class="mt-5">Login</h2>
 
     <!-- Form for user login -->
-    <form action="/login" method="POST" class="mt-4">
-      <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" name="username" required>
-      </div>
+   <form action="/login" method="POST">
 
-      <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
-      </div>
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" />
+
+      <label for="userID">Password:</label>
+      <input type="text" id="password" name="password">
 
 
+      <button class="btn btn-primary" type="submit">Submit</button>
 
-      <button type="submit" class="btn btn-primary">Login</button>
     </form>
 
     <!-- Option to redirect unregistered users to the registration page -->

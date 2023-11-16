@@ -97,6 +97,7 @@ app.post('/login', async (req, res) =>
 
   const userQuery = 'SELECT * FROM user WHERE username = $1';
 
+
   try
   {
     if (!username || !password)
@@ -105,6 +106,9 @@ app.post('/login', async (req, res) =>
     }
 
     const user = await db.oneOrNone(userQuery, [username]);
+
+    console.log('Attempting login for username:', username);
+    console.log('Hashed Password:', user.password);
 
     if (!user)
     {

@@ -95,7 +95,7 @@ app.post('/login', async (req, res) =>
   const usrname = req.body.username;
   const password = req.body.password;
 
-  const userQuery = 'SELECT * FROM user WHERE username = $1';
+  const userQuery = 'SELECT * FROM users WHERE username = $1';
   console.log('Generated SQL Query:', userQuery, [usrname]);
 
   try

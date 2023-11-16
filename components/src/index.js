@@ -130,7 +130,7 @@ app.post('/login', async (req, res) =>
     req.session.save();
 
 
-    return res.redirect('pages/home');
+    return res.redirect('/home');
 
 
   } catch (error)
@@ -180,7 +180,7 @@ app.post('/register', async (req, res) =>
     ]);
 
     console.log("User registered successfully.");
-    res.render('pages/home'); //redirect the user to login
+    return res.redirect('/home'); //redirect the user to login
 
   } catch (error) {
     console.error('Error saving user info: ', error);

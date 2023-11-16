@@ -120,8 +120,11 @@ app.post('/login', async (req, res) =>
     const passValid = await bcrypt.compare(password, user.password);
     if (!passValid)
     {
+      console.log("Password is invalid");
       return res.render('pages/login', { message: 'Password is invalid' });
     }
+
+    console.log("User logged in successfully");
 
     req.session.user = user;
     req.session.save();
@@ -147,42 +150,53 @@ app.get('/register', (req, res) => {
 
 
 
-// // register POST routine:
-// app.post('/register', async (req, res) =>
-// {
-//   //  const userPassword = req.body.password;
-//   // const username = req.body.username;
+// register POST routine:
+app.post('/register', async (req, res) =>
+{
+   const userPassword = req.body.password;
+  const username = req.body.username;
 
-//   // if (!userPassword)
-//   // {
-//   //  return res.render('pages/register', { message: 'You need to enter a password'}); //correct path is?
-//   // }
+  if (!userPassword)
+  {
+   return res.render('pages/register', { message: 'You need to enter a password'}); //correct path is?
+  }
 
-//   // if (!username)
-//   // {
-//   //  return res.render('pages/register', { message: 'You need to enter a username'}); //correct path is?
-//   // }
+  if (!username)
+  {
+   return res.render('pages/register', { message: 'You need to enter a username'}); //correct path is?
+  }
 
-//   // try {
-//   //   const saltRounds = 10;
-//   //   console.log("user password is: " + userPassword);
-//   //   const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
+  try {
+    const saltRounds = 10;
+    console.log("user password is: " + userPassword);
+    const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
 
-//   //   const insertUser = 'INSERT INTO users (username, password) VALUES ($1, $2)'; // SQL Query to insert user
+    const insertUser = 'INSERT INTO users (username, password) VALUES ($1, $2)'; // SQL Query to insert user
 
-//   //   //insert the user into database
-//   //   const result = await db.none(insertUser, [
-//   //     username,
-//   //     hashWord
-//   //   ]);
+    //insert the user into database
+    const result = await db.none(insertUser, [
+      username,
+      hashWord
+    ]);
 
-//   //   res.render('pages/login'); //redirect the user to login
+    console.log("User registered successfully.");
+    res.render('pages/login'); //redirect the user to login
 
-//   // } catch (error) {
-//   //   console.error('Error saving user info: ', error);
-//   //   res.render('pages/register',{error})
-//   // }
-// });
+  } catch (error) {
+    console.error('Error saving user info: ', error);
+    res.render('pages/register',{error})
+  }
+});
+
+// //***********************HOME */
+app.get('/home', (req, res) => {
+  res.render('pages/home');
+});
+
+app.post('/register', (req, res) => {
+
+});
+
 
 // //***********************LOGOUT */
 

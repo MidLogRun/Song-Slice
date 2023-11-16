@@ -7,7 +7,7 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
-const bcrypt = require('bcrypt'); //  To hash passwords
+const bcrypt = require('bcryptjs'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server.
 const { localsName } = require('ejs');
 const { application } = require('express');
@@ -73,7 +73,10 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-
+//Dummy Route:
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 // Redirect root URL to /login
 app.get('/', (req, res) => {
@@ -129,8 +132,8 @@ app.post('/login', async (req, res) =>
     req.session.user = user;
     req.session.save();
 
-
-    return res.redirect('/home');
+    //res.json({status: 'Login success!', message: 'Welcome!'});
+    return setTimeout(() => res.redirect('/home'), 1000); // Delayed redirect
 
 
   } catch (error)
@@ -241,23 +244,10 @@ app.get('/logout', (req, res) =>
 });
 
 
-// //Home page (only works when we have spotify API):
-// app.get('/home', async (req, res) =>
-// {
-//   try
-//   {
-
-//   } catch (error)
-//   {
-
-//   }
-// });
-
-
 
 // *****************************************************
 // <!-- Section 5 : Start Server -->
 // *****************************************************
-app.listen(3000, () => {
+ module.exports = app.listen(3000, () => {
   console.log('Server is listening on port 3000');
 });

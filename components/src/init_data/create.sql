@@ -1,9 +1,9 @@
-CREATE TABLE user(
-    user_id INT PRIMARY KEY,
-    username VARCHAR(50),
-    password VARCHAR(50) NOT NULL,
-    email VARCHAR(50),
+CREATE TABLE "user" (
+  username VARCHAR(50) PRIMARY KEY UNIQUE NOT NULL,
+  password VARCHAR(50) NOT NULL,
+  email VARCHAR(50)
 );
+
 
 CREATE TABLE release(
     release_id INT PRIMARY KEY,
@@ -28,7 +28,7 @@ CREATE TABLE song_to_release(
 
 CREATE TABLE rateReview(
     review_id INT PRIMARY KEY,
-    username_id INT,
+    username VARCHAR(50) UNIQUE NOT NULL,
     release_id INT,
     title VARCHAR(50),
     summary VARCHAR(300),
@@ -42,6 +42,6 @@ CREATE TABLE review_to_release(
 
 CREATE TABLE review_to_user(
     review_id INT,
-    user_id INT,
-    isReviewed BOOLEAN(0)
+    username VARCHAR(50) UNIQUE NOT NULL,
+    isReviewed BIT(1)
 );

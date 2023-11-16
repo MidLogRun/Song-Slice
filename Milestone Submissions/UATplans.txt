@@ -1,0 +1,16 @@
+User Acceptance Testing:
+
+    Unit tests for API routes:
+        login test has been created
+        User can't login unless they provide username and password
+            username must match entry in DB
+            password must match corresponding hashed password
+        If username does not exist in DB, prompt user with try again and/or register
+
+        TODO: registration testing
+        User can't register unless they provide: username, email address, password, confirm password
+            Username must be unique -> Query the database for any existing username that matches user input
+            User must enter a password -> confirm_password field must match each character in password field
+
+        TODO: <feature> testing
+        TODO: <feature> testing

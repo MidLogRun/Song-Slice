@@ -1,15 +1,9 @@
 Meeting Log: Project "Song Slice" - Creating the Ultimate Music Rating Website
-
-Date: November 15, 2023
+Meeting 1
+Date: November 6, 2023
 
 Meeting Objective: Brainstorming and Planning Phase
 
-Meeting Attendees:
-
-Trey V.
-Chris D.
-Matt L.
-Lilia G.
 Agenda:
 
 Introduction and Icebreaker (5 minutes):
@@ -65,4 +59,72 @@ Next Steps:
 
 Individual research and preparation for the assigned tasks.
 Weekly check-ins to track progress and address any challenges.
-The excitement is palpable as the team embarks on the journey to make Song Slice a reality!
+
+---------------------------------------------------------------------------------------------------------------------
+
+Meeting 2:
+
+Date: November 13, 2023
+
+
+Meeting Summary:
+    Data modeling
+    Rendering login and register pages
+    Use of Git commands
+
+
+
+
+Introduction:
+    What has been accomplished since last meeting:
+        Figma wireframes
+        Proper project directory layout
+        Added .gitignore
+        Pages and Partials added (not detailed quite yet)
+        Stubbed out beginning API routes
+        API routes for login created
+
+
+
+    Detailing the story-board:
+        (it's definitely still a work in progress allocating points and tagging it properly)
+
+
+
+User Acceptance Testing:
+    Unit tests for API routes:
+        login test has been created
+        User can't login unless they provide username and password
+            username must match entry in DB
+            password must match corresponding hashed password
+        If username does not exist in DB, prompt user with try again and/or register
+
+
+
+
+
+Questions:
+    Is our current directory on-track to meet reqs?
+    We are trying to apply styling
+
+
+
+Meeting 2 with Shirpah
+    -Good: 
+    -To Dos: before fall break; story board detailed, assignees, user acceptance criteria,
+            user acceptance document
+            look at UAD templates for testing/creating an account
+                -need another collumn for them - acceptance criteria (specify what is expected for that scenerio - throw error if unsuccessful)
+                -another collumn - test scenerio with automated test 
+            
+              UAD document in tabular form
+
+            "create a simple app that works well. start simple. make sure it all works well"
+
+            with init data ins/create - have drop tables (with nodemon)
+            that way when testing with nodemon it refreshes our data
+            
+  
+    -answers to questions asked:
+        -how to access or go about providing a URL?
+            -provide a local host URL

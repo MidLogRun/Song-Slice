@@ -92,22 +92,22 @@ app.get('/login', (req, res) => {
 // login POST routine:
 app.post('/login', async (req, res) =>
 {
-  const username = req.body.username;
+  const usrname = req.body.username;
   const password = req.body.password;
 
   const userQuery = 'SELECT * FROM user WHERE username = $1';
-
+  console.log('Generated SQL Query:', userQuery, [usrname]);
 
   try
   {
-    if (!username || !password)
+    if (!usrname || !password)
     {
       return res.render('pages/login', { message: 'Username and password are both required for login' });
     }
 
-    const user = await db.oneOrNone(userQuery, [username]);
+    const user = await db.oneOrNone(userQuery, [usrname]);
 
-    console.log('Attempting login for username:', username);
+    console.log('Attempting login for username:', usrname);
     console.log('Hashed Password:', user.password);
 
     if (!user)
@@ -132,7 +132,7 @@ app.post('/login', async (req, res) =>
 
   } catch (error)
   {
-     console.error('Error during login', error);
+     console.error('Error during login', error.message);
      res.status(500).json({ message: 'Login failed (Entered catch block)' });
   }
 });

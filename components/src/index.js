@@ -221,24 +221,24 @@ app.get('/home', (req, res) => {
 
 // //***********************LOGOUT */
 
-// //Logout GET routine:
-// app.get('/logout', (req, res) =>
-// {
-//   let message = 'You cannot log out if you cannot logged in.';
-//   // if (req.session)
-//   // {
-//   //   message = 'You have logged out.';
-//   //   //delete session object if exists
-//   //   req.session.destroy();
+//Logout GET routine:
+app.get('/logout', (req, res) =>
+{
+  let message = 'You cannot log out if you are not logged in.';
+  if (req.session)
+  {
+    message = 'You have logged out.';
+    //delete session object if exists
+    req.session.destroy();
 
-//   //   res.render('pages/login', {message});
-//   // }
+    return res.redirect('/home', {message});
+  }
 
-//   // res.render('pages/login', {
-//   //   message
-//   // });
+  return res.redirect('/login', {
+    message
+  });
 
-// });
+});
 
 
 // //Home page (only works when we have spotify API):

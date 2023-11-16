@@ -73,7 +73,10 @@ app.use(
 // <!-- Section 4 : API Routes -->
 // *****************************************************
 
-
+//Dummy Route:
+app.get('/welcome', (req, res) => {
+  res.json({status: 'success', message: 'Welcome!'});
+});
 
 // Redirect root URL to /login
 app.get('/', (req, res) => {
@@ -129,8 +132,8 @@ app.post('/login', async (req, res) =>
     req.session.user = user;
     req.session.save();
 
-
-    return res.redirect('/home');
+    //res.json({status: 'Login success!', message: 'Welcome!'});
+    return setTimeout(() => res.redirect('/home'), 1000); // Delayed redirect
 
 
   } catch (error)
@@ -188,6 +191,22 @@ app.post('/register', async (req, res) =>
   }
 });
 
+
+// Authentication Middleware:
+const auth = (req, res, next) => {
+  if (!req.session.user) {
+    // Default to login page.
+    return res.redirect('/login');
+  }
+  next();
+};
+
+// Authentication Required
+app.use(auth);
+
+
+
+
 // //***********************HOME */
 app.get('/home', (req, res) => {
   try
@@ -205,43 +224,30 @@ app.get('/home', (req, res) => {
 
 // //***********************LOGOUT */
 
-// //Logout GET routine:
-// app.get('/logout', (req, res) =>
-// {
-//   let message = 'You cannot log out if you cannot logged in.';
-//   // if (req.session)
-//   // {
-//   //   message = 'You have logged out.';
-//   //   //delete session object if exists
-//   //   req.session.destroy();
+//Logout GET routine:
+app.get('/logout', (req, res) =>
+{
+  let message = 'You cannot log out if you are not logged in.';
+  if (req.session)
+  {
+    message = 'You have logged out.';
+    //delete session object if exists
+    req.session.destroy();
 
-//   //   res.render('pages/login', {message});
-//   // }
+    return res.redirect('/home', {message});
+  }
 
-//   // res.render('pages/login', {
-//   //   message
-//   // });
+  return res.redirect('/login', {
+    message
+  });
 
-// });
-
-
-// //Home page (only works when we have spotify API):
-// app.get('/home', async (req, res) =>
-// {
-//   try
-//   {
-
-//   } catch (error)
-//   {
-
-//   }
-// });
+});
 
 
 
 // *****************************************************
 // <!-- Section 5 : Start Server -->
 // *****************************************************
-app.listen(3000, () => {
+ module.exports = app.listen(3000, () => {
   console.log('Server is listening on port 3000');
 });

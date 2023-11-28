@@ -245,9 +245,36 @@ app.get('/logout', (req, res) =>
 
 
 
+//SPOTIFY API------------------------------------>
+
+// const APIcontroller = (function() {
+
+//   const clientId = '';
+//   const clientSecret = '';
+
+//   const getToken = async() => {
+
+//     const result = await fetch('https://accounts.spotify.com/api/token', {
+//       method: 'POST',
+//       headers: {
+//         'Authorization' : 'Basic ' + btoa(clientId + ':' + clientSecret)
+//       },
+//       body: 'grant_type=client_credentials'
+//     });
+
+//     const data = await result.json();
+//     return data.acces_token;
+//   }
+
+
+// });
+
+
+
 // *****************************************************
 // <!-- Section 5 : Start Server -->
 // *****************************************************
  module.exports = app.listen(3000, () => {
   console.log('Server is listening on port 3000');
 });
+

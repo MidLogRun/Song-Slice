@@ -37,7 +37,7 @@ it('positive : /login', done => {
     .end((err, res) => {
 
       expect(res).to.have.status(200);
-      expect(username).to.equal('Example Name');
+      expect(username).to.equal('asdiasndas');
       // expect(email).to.equal('example@gmail.com');
 
       expect(password).to.equal('examplePassword')

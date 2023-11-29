@@ -7,6 +7,7 @@ const app = express();
 const pgp = require('pg-promise')(); // To connect to the Postgres DB from the node server
 const bodyParser = require('body-parser');
 const session = require('express-session'); // To set the session object. To store or access session data, use the `req.session`, which is (generally) serialized as JSON by the store.
+const qs = require('qs');
 const bcrypt = require('bcryptjs'); //  To hash passwords
 const axios = require('axios'); // To make HTTP requests from our server.
 const { localsName } = require('ejs');
@@ -14,8 +15,38 @@ const { application } = require('express');
 const port = 3000;
 
 
+/******** Section 1.5 */
+//Mount Spotify API:
+const client_id = process.env.CLIENT_ID; //client id
+const client_secret = process.env.CLIENT_SECRET; //client secret
+const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
 
+//Function that gets the token:
+const getAuth = async () =>
+{
+  try
+  {
+    //post request to SPOTIFY API for access token:
+    const token_url = 'https://accounts.spotify.com/api/token';
+    const data = qs.stringify({ 'grant_type': 'client_credentials' });
 
+    const response = await axios.post(token_url, data, {
+      headers: {
+        'Authorization': `Basic ${auth_token}`,
+        'Content-Type': 'application/x-www-form-urlencoded'
+      }
+    })
+
+    return response.data.access_token; //Spotify Token!
+    console.log(response.data.access_token);
+  } catch (error)
+  {
+    console.error('Error getting Spotify token: ', error.message);
+  }
+
+};
+
+/**************** */
 // *****************************************************
 // <!-- Section 2 : Connect to DB -->
 // *****************************************************
@@ -133,7 +164,7 @@ app.post('/login', async (req, res) =>
     req.session.save();
 
     //res.json({status: 'Login success!', message: 'Welcome!'});
-    return setTimeout(() => res.redirect('/home'), 1000); // Delayed redirect
+    return setTimeout(() => res.redirect('/release'), 1000); // Delayed redirect  << Changed to /release temporarily
 
 
   } catch (error)
@@ -241,6 +272,88 @@ app.get('/logout', (req, res) =>
     message
   });
 
+});
+
+
+
+
+//Spotify Get Albums:
+//https://api.spotify.com/v1/albums
+
+
+//////////This function can be ignored as it is not of the express form
+const getTopAlbums = async () =>
+{
+  //request token using getAuth() function:
+  const accessToken = await getAuth();
+  console.log("access_token from getTopAlbums: " + accessToken); //log the access token
+
+  const apiURL = `https://api.spotify.com/v1/albums`;
+
+  try
+  {
+    const response = await axios.get(apiURL, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+    console.log(response.data); //print the data to the console
+    return response.data;
+  } catch (error)
+  {
+    console.error('error with getTopAlbums', error);
+  }
+}
+////////////////
+
+/////////////// Beginning of release function
+
+app.get('/release', async  (req, res) =>
+{
+  const accessToken = await getAuth();
+  console.log("access_token from getTopAlbums: " + accessToken); //log the access token
+
+  const apiURL = `https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy`;
+  try {
+    const response = await axios.get(apiURL, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`
+      }
+    });
+
+    if (response.status === 200)
+    {
+      const albums = response.data;
+      console.log("Logging response data: " + albums);
+
+      res.render('pages/release', {
+        albums
+      }); //Render the release page with JSON data (albums)
+    }
+    else
+    {
+      res.render('pages/release', {
+        albums: [],
+        errorMessage: `API request failed with status code: ${response.status}`,
+      });
+    }
+  }
+  catch (error)
+  {
+
+    console.error('!!!!!!!!!!Error during Spotify API routine:', error);
+
+
+
+    console.error("Error status:", error.response.status);
+    console.error("Error data:", error.response.data);
+
+
+    res.render('pages/release', {
+      albums: [],
+      errorMessage: 'An error occurred while fetching albums.',
+    });
+  }
 });
 
 

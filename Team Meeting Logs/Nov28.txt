@@ -1,0 +1,36 @@
+Meeting log for November 28
+
+
+General
+- Check in to see progress that everyone's done
+- Everyone is still working on API, general confusion/difficulty
+- Do we want to scratch the idea of the reviews?
+- Pick either include only the ratings or reviews. For now, stick to ratings
+  and do reviews later if we have time
+
+Pages
+- Deciding if it's necessary we have a profile page.
+- Agreed that as long as you can see WHO left a rating/review on a release page,
+  we can go without the profile page
+- Home page will have a carousel showing releases (album art)
+- We agreed that we'll have 5, maybe also add the searchbar there
+- Also, could be that you can just review the releases that are on the homepage
+  (new ones show up each day)
+
+API
+- General confusion on API
+- Chris found a video, but requires React
+- Lilia also found video, more in line with what we learned in class,
+  uses postman
+- Lilia shared progress on API
+- We found a way to do the API together, postman has a feature where you can share 
+  workspace and let others collaborate.
+- DRAWBACK: Postman only allows a max of 3 people, unless you upgrade.
+- Trey won't have access to postman, so we need to keep him updated
+- Matt changed some things in .env, client_id and client_secret since we used that in Postman
+- Matt notices that the way we used the API key from lab 9 is significally different than how we are
+  going to use it for spotify
+- Spotify endpoints have IDs attached to them and can't find list of IDs that we 
+  could use as strict values
+- Matt added some spotify authentication functions and such to index.js so we'll be able to
+  use that for every API rout we make

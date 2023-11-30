@@ -2,26 +2,30 @@
 <%- include ('../partials/menu') %>
 
 <main>
+  <div class="event-card" style="border: 3px solid #000; padding: 20px; margin: 15px; height: 450px; width: 400px;">
+      <h1 class="text-centered">Albums</h1>
+      <% if (albums) { %>
+            <h2><%= albums.name %></h2>
+            <img src="<%= albums.images[0].url %>" alt="<%= albums.name %> Image" class="card-img">
+  <div>
 
-  <main>
-    <div class="event-card" style="border: 3px solid #000; padding: 20px; margin: 15px; height: 450px; width: 400px;">
-        <h1 class="text-centered">Albums</h1>
-        <% if (albums) { %>
-              <h2><%= albums.name %></h2>
-              <img src="<%= albums.images[0].url %>" alt="<%= albums.name %> Image" class="card-img">
-    <div>
+    <!-- Other album information -->
+  </div>
+<% } else { %>
+  <p>No album available</p>
+<% } %>
 
-      <!-- Other album information -->
+
+  </div>
+  <br>
+    <div class="btn-group" role="group" aria-label="Basic example">
+      <button type="button" class="btn btn-secondary">1</button>
+      <button type="button" class="btn btn-secondary">2</button>
+      <button type="button" class="btn btn-secondary">3</button>
+      <button type="button" class="btn btn-secondary">4</button>
+      <button type="button" class="btn btn-secondary">5</button>
     </div>
-  <% } else { %>
-    <p>No album available</p>
-  <% } %>
-
-
-    </div>
-
-</main>
-
+  </br>
 </main>
 
 

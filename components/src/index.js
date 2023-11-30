@@ -21,6 +21,8 @@ const client_id = process.env.CLIENT_ID; //client id
 const client_secret = process.env.CLIENT_SECRET; //client secret
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
 
+app.use('/resources', express.static('./resources'));
+
 //Function that gets the token:
 const getAuth = async () =>
 {

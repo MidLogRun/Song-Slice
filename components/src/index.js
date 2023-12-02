@@ -15,6 +15,16 @@ const { application } = require('express');
 const port = 3000;
 
 
+///Album ID holders (holds these ids from Spotify)
+const AlbumURLs = {
+  Album1: 'https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy',
+  Album2: 'https://api.spotify.com/v1/album/18NOKLkZETa4sWwLMIm0UZ'
+
+};
+
+
+
+
 /******** Section 1.5 */
 //Mount Spotify API:
 const client_id = process.env.CLIENT_ID; //client id
@@ -22,31 +32,40 @@ const client_secret = process.env.CLIENT_SECRET; //client secret
 const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
 
 app.use('/resources', express.static('./resources'));
-
+/////////////////////////
 //Function that gets the token:
-const getAuth = async () =>
-{
-  try
-  {
-    //post request to SPOTIFY API for access token:
+const getAuth = () => {
+  try {
+    // post request to SPOTIFY API for access token:
     const token_url = 'https://accounts.spotify.com/api/token';
     const data = qs.stringify({ 'grant_type': 'client_credentials' });
 
-    const response = await axios.post(token_url, data, {
+    // console.log("Got here!"); /////////////DEBUG STATEMENT
+    return axios.post(token_url, data, {
       headers: {
         'Authorization': `Basic ${auth_token}`,
         'Content-Type': 'application/x-www-form-urlencoded'
       }
     })
-
-    return response.data.access_token; //Spotify Token!
-    console.log(response.data.access_token);
-  } catch (error)
-  {
+      .then(response => {
+        console.log("Got here!"); /////////////DEBUG STATEMENT
+        console.log("Spotify Access token:  " + response.data.access_token);
+        return response.data.access_token; // Spotify Token!
+      })
+      .catch(error => {
+        console.error('Error getting Spotify token: ', error.message);
+      });
+  } catch (error) {
     console.error('Error getting Spotify token: ', error.message);
   }
-
 };
+
+console.log("Running getAuth for Spotify access token... ");
+// getAuth().then(accessToken => {
+//   // Use the accessToken here or pass it to other parts of your application.
+//   console.log("Access Token:", accessToken);
+// });
+
 
 /**************** */
 // *****************************************************
@@ -71,6 +90,7 @@ db.connect()
   .catch(error => {
     console.log('ERROR:', error.message || error);
   });
+
 
 
 
@@ -166,7 +186,7 @@ app.post('/login', async (req, res) =>
     req.session.save();
 
     //res.json({status: 'Login success!', message: 'Welcome!'});
-    return setTimeout(() => res.redirect('/release'), 1000); // Delayed redirect  << Changed to /release temporarily
+    return res.redirect('/release');
 
 
   } catch (error)
@@ -216,11 +236,14 @@ app.post('/register', async (req, res) =>
     ]);
 
     console.log("User registered successfully.");
-    return res.redirect('/home'); //redirect the user to login
+    //Save session info
+    req.session.user = insertUser;
+    req.session.save();
+    return res.redirect('/home'); //redirect the user to the home page
 
   } catch (error) {
     console.error('Error saving user info: ', error);
-    res.render('pages/register',{error})
+    res.render('pages/register',{message: 'An error occurred while registering the user.'})
   }
 });
 
@@ -228,7 +251,7 @@ app.post('/register', async (req, res) =>
 // Authentication Middleware:
 const auth = (req, res, next) => {
   if (!req.session.user) {
-    // Default to login page.
+    // Default to login page if no user session:
     return res.redirect('/login');
   }
   next();
@@ -282,37 +305,13 @@ app.get('/logout', (req, res) =>
 //Spotify Get Albums:
 //https://api.spotify.com/v1/albums
 
-
-//////////This function can be ignored as it is not of the express form
-const getTopAlbums = async () =>
-{
-  //request token using getAuth() function:
-  const accessToken = await getAuth();
-  console.log("access_token from getTopAlbums: " + accessToken); //log the access token
-
-  const apiURL = `https://api.spotify.com/v1/albums`;
-
-  try
-  {
-    const response = await axios.get(apiURL, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
-      }
-    });
-    console.log(response.data); //print the data to the console
-    return response.data;
-  } catch (error)
-  {
-    console.error('error with getTopAlbums', error);
-  }
-}
-////////////////
+///TEMP accessToken:
+accessToken = 'BQD9yGVD4Um45Igm7gxErImyZcraYRxtut7hTDLMr7xG68-rbFHt8DEvhT40eU_dPTuL-rKnI1W8llAu43HYjPzbbKMjESdYDlJkTbIMqNiYV9AxmmI';
 
 /////////////// Beginning of release function
 
 app.get('/release', async  (req, res) =>
 {
-  const accessToken = await getAuth();
   console.log("access_token from getTopAlbums: " + accessToken); //log the access token
 
   const apiURL = `https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy`;

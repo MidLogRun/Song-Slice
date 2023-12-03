@@ -19,15 +19,37 @@ const SpotifyWebAPi = require('spotify-web-api-node'); //wrapper for spotify web
 
 ///Album ID holders (holds these ids from Spotify)
 const AlbumIDs = {
-  Album1: '4aawyAB9vmqN3uQ7FjRGTy',
-  Album2: '18NOKLkZETa4sWwLMIm0UZ',
-  Album3: '43otFXrY0bgaq5fB3GrZj6',
-  Album4: ''
-
+  Album1: '30JZqToNZZH4mN7I0ymGvH', //Planet Pit
+  Album2: '18NOKLkZETa4sWwLMIm0UZ', //Utopia
+  Album3: '43otFXrY0bgaq5fB3GrZj6', //The Getaway
+  Album4: '1bt6q2SruMsBtcerNVtpZB', //Rumours
+  Album5: '0ETFjACtuP2ADo6LFhL6HN', //Abby Road
+  Album6: '6dVIqQ8qmQ5GBnJ9shOYGE', //OK Computer
+  Album7: '6yskFQZNlLYhkchAxELHi6', //Nebraska
+  Album8: '2v6ANhWhZBUKkg6pJJBs3B', //What's Going On
+  Album9: '1weenld61qoidwYuZ1GESA', //Kind Of Blue
+  Album10: '6iHuSGy6pq4tNGFV3ZVPtl',//Substance
+  Album11: '5mwOo1zikswhmfHvtqVSXg',//Pink Moon
+  Album12: '1gIC63gC3B7o7FfpPACZQJ', //4
+  Album13: '4xwx0x7k6c5VuThz5qVqmV', //The Velvet Underground & Nico
+  Album14: '5lEphbceIgaK1XxWeSrC9E', //Heaven or Las Vegas
+  Album15: '35UJLpClj5EDrhpNIi4DFg', //The Bends
+  Album16: '3Us57CjssWnHjTUIXBuIeH', //Bad
+  Album17: '4piJq7R3gjUOxnYs6lDCTg', //Hot Fuss
+  Album18: '1jToVugwBEzcak8gJNZG2f', //GINGER
+  Album19: '4ndTvTrNwgUfRw4g1R2B4l', //MUNA
+  Album20: '4HTVABUq8amDUxBv3zJbX4', //Brown Sugar
+  Album21: '4m2880jivSbbyEGAKfITCa', //Random Access Memories
+  Album22: '4bJCKmpKgti10f3ltz6LLl', //22, A Million
+  Album23: '2aoI8tkPq9NBvGiARD0KoR', //Multi-Love
+  Album24: '20r762YmB5HeofjMCiPMLv', //My Beautiful Dark Twisted Fantasy
+  Album25: '4X8hAqIWpQyQks2yRhyqs4', //Born To Die
+  Album26: '7ycBtnsMtyVbbwTfJwRjSP', //To Pimp A Butterfly
+  Album27: '3nyszXBcbHA92HAB5NPsRL', //Sittin' By the Road
+  Album28: '1dShPPoxXfzbjFO1jIHJZz', //Blue Rev
+  Album29: '3mH6qwIy9crq0I9YQbOuDf', //Blonde
+  Album30: '4Coa8Eb9SzjrkwWEom963Q' //Puberty 2
 };
-
-
-
 
 /******** Section 1.5 */
 //Mount Spotify API:
@@ -86,9 +108,6 @@ db.connect()
     console.log('ERROR:', error.message || error);
   });
 
-
-
-
 // *****************************************************
 // <!-- Section 3 : App Settings -->
 // *****************************************************
@@ -111,7 +130,6 @@ app.use(
     extended: true,
   })
 );
-
 
 // *****************************************************
 // <!-- Section 4 : API Routes -->
@@ -176,7 +194,7 @@ app.post('/login', async (req, res) =>
     req.session.save();
 
     //res.json({status: 'Login success!', message: 'Welcome!'});
-    return res.redirect('/release');
+    return res.redirect('/homepage');
 
 
   } catch (error)
@@ -247,13 +265,6 @@ const auth = (req, res, next) => {
 // Authentication Required
 app.use(auth);
 
-
-
-
-
-
-
-
 // //***********************LOGOUT */
 
 //Logout GET routine:
@@ -273,8 +284,6 @@ app.get('/logout', (req, res) =>
 
 });
 
-
-
 /**
  * OAuth to Spotify
  * The following function verifies our client credentials and secret in order to create a
@@ -284,6 +293,22 @@ app.get('/logout', (req, res) =>
 
 //Spotify Get Albums:
 //https://api.spotify.com/v1/albums
+//Function that returns 4 random ids from the bank of AlbumIDs above
+function randomFourAlbums()
+{
+  const albumIDsArray = Object.values(AlbumIDs);
+  const maxAlbums = 4;
+
+  const cloneAlbumIDs = [...albumIDsArray];
+  for (let i = cloneAlbumIDs.length - 1; i > 0; i--)
+  {
+    const j = Math.floor(Math.random() * (i + 1));
+    [cloneAlbumIDs[i], cloneAlbumIDs[j]] = [cloneAlbumIDs[j], cloneAlbumIDs[i]]
+  }
+    const selectedAlbumIDs = cloneAlbumIDs.slice(0, maxAlbums); //4 random ids
+
+    return selectedAlbumIDs;
+}
 
 
 // //***********************HOME */
@@ -295,6 +320,37 @@ app.get('/home', (req, res) => {
     console.error('Error saving user info: ', error);
   }
 });
+
+
+//////////Homepage Route.
+/**
+ * When a user logs in, they should expect to see a welcome message and description as well as:
+ *
+ *  four randomly-selected albums within a carousel
+ */
+app.get('/homepage', async (req, res) =>
+{
+  var images = [], names = [], artists = [];
+  const IDs = randomFourAlbums(); //Array of four random IDs from bank above
+
+  try
+  {
+    //Can't use a regular loop since spotifyApi.getAlbums returns a promise:
+    await Promise.all(IDs.map(async (ID, index) => {
+      const data = await spotifyApi.getAlbum(ID);
+      images[index] = data.body.images[0].url; // Grab the first image in the list (images[0])
+      names[index] = data.body.name; // Name of the album
+      artists[index] = data.body.artists[0].name; // Name of the primary album artist
+    }));
+
+    res.render('pages/homepage', { IDs, images, names, artists }); //render the homepage with these attributes
+  } catch (error)
+  {
+    console.error("Error loading the homepage");
+    res.status(500).send("Error loading the homepage");
+  }
+});
+
 
 /////////////// Beginning of release function
 app.get('/release', (req, res, next) =>

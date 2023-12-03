@@ -18,9 +18,11 @@ const SpotifyWebAPi = require('spotify-web-api-node'); //wrapper for spotify web
 
 
 ///Album ID holders (holds these ids from Spotify)
-const AlbumURLs = {
-  Album1: 'https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy',
-  Album2: 'https://api.spotify.com/v1/album/18NOKLkZETa4sWwLMIm0UZ'
+const AlbumIDs = {
+  Album1: '4aawyAB9vmqN3uQ7FjRGTy',
+  Album2: '18NOKLkZETa4sWwLMIm0UZ',
+  Album3: '43otFXrY0bgaq5fB3GrZj6',
+  Album4: ''
 
 };
 
@@ -248,19 +250,8 @@ app.use(auth);
 
 
 
-// //***********************HOME */
-app.get('/home', (req, res) => {
-  try
-  {
-    res.render('pages/home');
-  } catch (error) {
-    console.error('Error saving user info: ', error);
-  }
-});
 
-// app.post('/home', (req, res) => {
 
-// });
 
 
 // //***********************LOGOUT */
@@ -291,70 +282,38 @@ app.get('/logout', (req, res) =>
  *
  */
 
-
-
 //Spotify Get Albums:
 //https://api.spotify.com/v1/albums
 
 
+// //***********************HOME */
+app.get('/home', (req, res) => {
+  try
+  {
+    res.render('pages/home');
+  } catch (error) {
+    console.error('Error saving user info: ', error);
+  }
+});
+
 /////////////// Beginning of release function
-
-// app.get('/release', async  (req, res) =>
-// {
-//   var token = await getAuth();
-//   const apiURL = `https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy`;
-//   try {
-//     const response = await axios.get(apiURL, {
-//       headers: {
-//         'Authorization': `Bearer ${token}`
-//       }
-//     });
-
-//     if (response.status === 200)
-//     {
-//       const albums = response.data;
-//       console.log("Logging response data: " + albums);
-
-//       res.render('pages/release', {
-//         albums
-//       }); //Render the release page with JSON data (albums)
-//     }
-//     else
-//     {
-//       res.render('pages/release', {
-//         albums: [],
-//         errorMessage: `API request failed with status code: ${response.status}`,
-//       });
-//     }
-//   }
-//   catch (error)
-//   {
-//     console.error('!!!!!!!!!!Error during Spotify API routine:', error);
-//     console.error("Error status:", error.response.status);
-//     console.error("Error data:", error.response.data);
-//     res.render('pages/release', {
-//       albums: [],
-//       errorMessage: 'An error occurred while fetching albums.',
-//     });
-//   }
-// });
-
-
 app.get('/release', (req, res, next) =>
 {
-  spotifyApi.getAlbum('18NOKLkZETa4sWwLMIm0UZ')
+  spotifyApi.getAlbum('43otFXrY0bgaq5fB3GrZj6')
     .then(
       function (data)
       {
-       // let image = data.body.images[0];
-        res.render('pages/release', { image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks});
+        // let image = data.body.images[0];
+        res.render('pages/release', { image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks });
       },
       function (error)
       {
         console.error("This error happened", error);
       }
-  )
-})
+    )
+});
+
+
 
 
 // *****************************************************

@@ -14,6 +14,8 @@ const { localsName } = require('ejs');
 const { application } = require('express');
 const port = 3000;
 
+const SpotifyWebAPi = require('spotify-web-api-node'); //wrapper for spotify web api
+
 
 ///Album ID holders (holds these ids from Spotify)
 const AlbumURLs = {
@@ -29,42 +31,33 @@ const AlbumURLs = {
 //Mount Spotify API:
 const client_id = process.env.CLIENT_ID; //client id
 const client_secret = process.env.CLIENT_SECRET; //client secret
-const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
+//const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
 
-app.use('/resources', express.static('./resources'));
-/////////////////////////
-//Function that gets the token:
-const getAuth = () => {
-  try {
-    // post request to SPOTIFY API for access token:
-    const token_url = 'https://accounts.spotify.com/api/token';
-    const data = qs.stringify({ 'grant_type': 'client_credentials' });
+const spotifyApi = new SpotifyWebAPi({
+  clientId: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET
+});
 
-    // console.log("Got here!"); /////////////DEBUG STATEMENT
-    return axios.post(token_url, data, {
-      headers: {
-        'Authorization': `Basic ${auth_token}`,
-        'Content-Type': 'application/x-www-form-urlencoded'
-      }
-    })
-      .then(response => {
-        console.log("Got here!"); /////////////DEBUG STATEMENT
-        console.log("Spotify Access token:  " + response.data.access_token);
-        return response.data.access_token; // Spotify Token!
-      })
-      .catch(error => {
-        console.error('Error getting Spotify token: ', error.message);
-      });
-  } catch (error) {
-    console.error('Error getting Spotify token: ', error.message);
-  }
-};
+//Retrieving access token:
+/* The JSON body returned from Spotify looks like this:
+    {
+      "access_token": "NgCXRKc...MzYjw",
+      "token_type": "bearer",
+      "expires_in": 3600
+    }
+*/
+spotifyApi
+  .clientCredentialsGrant() //we are using client credentials OAuth flow (no need to have redirect URI)
+  .then(data =>
+  {
+    console.log("spotifyApi data body: " + data.body);
+    spotifyApi.setAccessToken(data.body["access_token"]);
 
-console.log("Running getAuth for Spotify access token... ");
-// getAuth().then(accessToken => {
-//   // Use the accessToken here or pass it to other parts of your application.
-//   console.log("Access Token:", accessToken);
-// });
+  })
+  .catch(error =>
+  {
+    console.error("Something went wrong when retrieving an access token", error);
+  })
 
 
 /**************** */
@@ -100,6 +93,7 @@ db.connect()
 
 app.set('view engine', 'ejs'); // set the view engine to EJS
 app.use(bodyParser.json()); // specify the usage of JSON for parsing request body.
+app.use('/resources', express.static('./resources'));
 
 // initialize session variables
 app.use(
@@ -115,11 +109,6 @@ app.use(
     extended: true,
   })
 );
-
-// //**Not sure what this is: */
-// const path = require('path');
-// // Set the views directory
-//  app.set('views', path.join(__dirname, 'src', 'views', 'pages'));
 
 
 // *****************************************************
@@ -143,7 +132,6 @@ app.get('/', (req, res) => {
 app.get('/login', (req, res) => {
   res.render('pages/login');
 });
-
 
 // login POST routine:
 app.post('/login', async (req, res) =>
@@ -202,9 +190,6 @@ app.post('/login', async (req, res) =>
 app.get('/register', (req, res) => {
   res.render('pages/register');
 });
-
-
-
 
 // register POST routine:
 app.post('/register', async (req, res) =>
@@ -283,80 +268,93 @@ app.get('/home', (req, res) => {
 //Logout GET routine:
 app.get('/logout', (req, res) =>
 {
-  let message = 'You cannot log out if you are not logged in.';
+
   if (req.session)
   {
-    message = 'You have logged out.';
     //delete session object if exists
     req.session.destroy();
 
-    return res.redirect('/home', {message});
+    console.log("User has successfully logged out");
+    return res.redirect('/home');
   }
 
-  return res.redirect('/login', {
-    message
-  });
+  return res.redirect('/login');
 
 });
 
+
+
+/**
+ * OAuth to Spotify
+ * The following function verifies our client credentials and secret in order to create a
+ * token for us to use in our Spotify endpoints
+ *
+ */
 
 
 
 //Spotify Get Albums:
 //https://api.spotify.com/v1/albums
 
-///TEMP accessToken:
-accessToken = 'BQD9yGVD4Um45Igm7gxErImyZcraYRxtut7hTDLMr7xG68-rbFHt8DEvhT40eU_dPTuL-rKnI1W8llAu43HYjPzbbKMjESdYDlJkTbIMqNiYV9AxmmI';
 
 /////////////// Beginning of release function
 
-app.get('/release', async  (req, res) =>
+// app.get('/release', async  (req, res) =>
+// {
+//   var token = await getAuth();
+//   const apiURL = `https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy`;
+//   try {
+//     const response = await axios.get(apiURL, {
+//       headers: {
+//         'Authorization': `Bearer ${token}`
+//       }
+//     });
+
+//     if (response.status === 200)
+//     {
+//       const albums = response.data;
+//       console.log("Logging response data: " + albums);
+
+//       res.render('pages/release', {
+//         albums
+//       }); //Render the release page with JSON data (albums)
+//     }
+//     else
+//     {
+//       res.render('pages/release', {
+//         albums: [],
+//         errorMessage: `API request failed with status code: ${response.status}`,
+//       });
+//     }
+//   }
+//   catch (error)
+//   {
+//     console.error('!!!!!!!!!!Error during Spotify API routine:', error);
+//     console.error("Error status:", error.response.status);
+//     console.error("Error data:", error.response.data);
+//     res.render('pages/release', {
+//       albums: [],
+//       errorMessage: 'An error occurred while fetching albums.',
+//     });
+//   }
+// });
+
+
+app.get('/release', (req, res, next) =>
 {
-  console.log("access_token from getTopAlbums: " + accessToken); //log the access token
-
-  const apiURL = `https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy`;
-  try {
-    const response = await axios.get(apiURL, {
-      headers: {
-        'Authorization': `Bearer ${accessToken}`
+  spotifyApi.getAlbum('18NOKLkZETa4sWwLMIm0UZ')
+    .then(
+      function (data)
+      {
+       // let image = data.body.images[0];
+        res.render('pages/release', { image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks});
+      },
+      function (error)
+      {
+        console.error("This error happened", error);
       }
-    });
-
-    if (response.status === 200)
-    {
-      const albums = response.data;
-      console.log("Logging response data: " + albums);
-
-      res.render('pages/release', {
-        albums
-      }); //Render the release page with JSON data (albums)
-    }
-    else
-    {
-      res.render('pages/release', {
-        albums: [],
-        errorMessage: `API request failed with status code: ${response.status}`,
-      });
-    }
-  }
-  catch (error)
-  {
-
-    console.error('!!!!!!!!!!Error during Spotify API routine:', error);
-
-
-
-    console.error("Error status:", error.response.status);
-    console.error("Error data:", error.response.data);
-
-
-    res.render('pages/release', {
-      albums: [],
-      errorMessage: 'An error occurred while fetching albums.',
-    });
-  }
-});
-
+  )
+})
 
 
 // *****************************************************

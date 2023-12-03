@@ -371,6 +371,127 @@ app.get('/release', (req, res, next) =>
 
 
 
+//pass in item id as paramter
+//click on release to show average rating, so not shown on the home for each album (dont worry about it now)
+function rated1(){
+
+  let rate = 1;
+
+  //way to get album id
+
+  //let album_id = album currently on
+  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
+
+  const result = db.query(checkRate);
+
+
+  //if user has not rate before
+  if(result.length == 0)
+  {
+    //inserts album to user_to_release, as they have not yet rated album
+    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
+
+
+    //inserts rating to release's ratings
+    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
+
+    //inserts rating for the album, into user_to_release
+    const insertRateUser = 'INSERT INTO user_to_release SET rating = rate WHERE release_id = album_id';
+
+  }
+
+
+
+
+};
+
+function rated2(){
+
+
+};
+
+function rated3(){
+
+
+};
+
+function rated4(){
+
+
+};
+
+function rated5(){
+
+
+};
+
+
+
+ //TESTNG OTHER WAYS 
+// var rating = document.getElementById('userRating');
+
+// var buttons = document.getElementsByTagName('button');
+    
+// var selectedButtonNumber;
+//     // find button selected
+//     for (var i = 0; i < buttons.length; i++) {
+//         buttons[i].addEventListener('click', function(event) {
+            
+//             if(document.getElementById('button') == enabled)
+//             {
+//               selectedButtonNumber = i;
+//             }
+
+//           })
+//         }
+//         //disable others
+//         for (var i = 0; i < buttons.length; i++) {
+//           if(i != selectedButtonNumber)
+//           {
+//             document.getElementsById('button') = disabled;
+//           }
+
+//         }
+          
+//};
+
+//test
+// app.put('/updateLikes', (req, res) => {
+//   const { like_input } = req.body;
+
+// //TODO: Change attributes of query to fit album database
+// //query to update data in album query  
+
+// const insertRate = 'INSERT INTO release ratings VALUES = $1'
+
+// //add my rate into the release reviews
+// //then we can query / average 
+//maybe get id of image/song/album currently on when pressing button. Then when carousel rotates, refresh button disability
+
+
+// //talk to lilia - she has to edit table for below part to work
+// //eventually, going to have to make it so you can only review once, updating a bool value in a table that user has review that album (user_to_release?)
+
+// // CREATE TABLE review(
+// //   review_id INT PRIMARY KEY,
+// //   username VARCHAR(50) NOT NULL,
+// //   release_id INT,
+// //   title VARCHAR(50) NOT NULL,
+// //   summary TEXT,
+// //   rating INT CHECK (rating >= 1 and rating <= 5) NOT NULL,
+// //   CONSTRAINT FK_review_user FOREIGN KEY (username) REFERENCES users(username),
+// //   CONSTRAINT FK_review_release FOREIGN KEY (release_id) REFERENCES release(release_id),
+// //   CONSTRAINT UQ_user_release_review UNIQUE (username, release_id) -- Ensures that each user can only make one review per release
+// // );
+
+//   res.status(200).json({message: 'Data updated successfully'});
+// });
+
+
+
+
+
+
 
 // *****************************************************
 // <!-- Section 5 : Start Server -->

@@ -11,7 +11,7 @@ CREATE TABLE release(
     artist varchar(100) NOT NULL,
     release_year INT NOT NULL,
     totalTracks INT NOT NULL,
-    overallRating DECIMAL(3,2)
+    overallRating DECIMAL(3,2) -- i think we change this to rating. overall rating will be calculated with a simple average of all ratings in this collum
 );
 
 DROP TABLE IF EXISTS song CASCADE;
@@ -45,5 +45,13 @@ CREATE TABLE userLibrary(
     CONSTRAINT FK_userLibrary_user FOREIGN KEY (username) REFERENCES users(username),
     CONSTRAINT FK_userLibrary_release FOREIGN KEY (release_id) REFERENCES release(release_id),
     CONSTRAINT PK_userLibrary PRIMARY KEY (username, release_id)
+);
+
+DROP TABLE IF EXISTS user_to_release CASCADE;
+CREATE TABLE user_to_release(
+    user_id INT,
+    release_id INT; --may need to change to album or something
+    rating INT;
+    --FK's and references, etc;
 );
 

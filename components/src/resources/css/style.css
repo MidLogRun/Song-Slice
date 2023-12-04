@@ -29,4 +29,6 @@
 
 .tracklist {
   margin-left: 20px; /* Adjust this value based on your preference */
+  width: 500px;
+  overflow: auto;
 }

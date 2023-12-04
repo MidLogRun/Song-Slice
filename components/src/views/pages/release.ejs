@@ -2,7 +2,7 @@
 <%- include ('../partials/menu') %>
 
 <main>
-  <h1 class="text-centered">Albums</h1>
+
   <div class="album-container">
     <% if (image) { %>
       <div class="album-details">
@@ -14,7 +14,7 @@
         <table class="table table-dark">
           <thead>
             <th scope="col" class="text-centered"><h1><%=albumName%></h1></th>
-            <th scope="col" class="text-centered"><h2><%=artist%></h2></th>
+            <th scope="col" class="text-secondary"><h2><%=artist%></h2></th>
           </thead>
           <tbody>
             <%tracks.items.forEach((track, index) => { %>

@@ -373,13 +373,13 @@ app.get('/release', (req, res, next) =>
 
 //pass in item id as paramter
 //click on release to show average rating, so not shown on the home for each album (dont worry about it now)
-function rated1(){
+ function rated1(){ 
 
   let rate = 1;
 
   //way to get album id
 
-  //let album_id = album currently on
+  let album_id = albumid;
   const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
 
   const result = db.query(checkRate);
@@ -391,101 +391,262 @@ function rated1(){
     //inserts album to user_to_release, as they have not yet rated album
     const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
 
+    //inserts rating to release's ratings
+    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
+
+    //inserts rating for the album, into user_to_release
+    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
+
+    //run queries
+    const callInsertRelease = db.query(insertRelease);
+    const callInsertRate = db.queruy(insertRate);
+    const callINsertRateUser = db.query(insertRateUser);
+  }
+  else{
+    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
+
+    //how to change the overallRating/rating that already exists??
+    const editRate = 'UPDATE release overallRating Values';
+
+    //run query
+    const callEditRelease = db.query(editRelease);
+    const callEditRate = db.query(editRate);
+  }
+
+//   //button changes color and display average
+   let button = document.getElementById('homeButton1');
+   button.style.backgroundColor = 'pink';
+
+   button = document.getElementById('homeButton2');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton3');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton4');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton5');
+   button.style.backgroundColor = 'grey';
+
+};
+
+function rated2(){
+  let rate = 2;
+
+  //way to get album id
+
+  let album_id = albumid;
+  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
+
+  const result = db.query(checkRate);
+
+
+  //if user has not rate before
+  if(result.length == 0)
+  {
+    //inserts album to user_to_release, as they have not yet rated album
+    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
 
     //inserts rating to release's ratings
     const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
 
     //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release SET rating = rate WHERE release_id = album_id';
+    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
 
+    //run queries
+    const callInsertRelease = db.query(insertRelease);
+    const callInsertRate = db.queruy(insertRate);
+    const callINsertRateUser = db.query(insertRateUser);
+  }
+  else{
+    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
+
+    //how to change the overallRating/rating that already exists??
+    const editRate = 'UPDATE release overallRating Values';
+
+    //run query
+    const callEditRelease = db.query(editRelease);
+    const callEditRate = db.query(editRate);
   }
 
+//   //button changes color and display average
+   let button = document.getElementById('homeButton2');
+   button.style.backgroundColor = 'pink';
 
-
-
-};
-
-function rated2(){
+   button = document.getElementById('homeButton1');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton3');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton4');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton5');
+   button.style.backgroundColor = 'grey';
 
 
 };
 
 function rated3(){
+  let rate = 3;
+
+  //way to get album id
+
+  let album_id = albumid;
+  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
+
+  const result = db.query(checkRate);
+
+
+  //if user has not rate before
+  if(result.length == 0)
+  {
+    //inserts album to user_to_release, as they have not yet rated album
+    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
+
+    //inserts rating to release's ratings
+    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
+
+    //inserts rating for the album, into user_to_release
+    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
+
+    //run queries
+    const callInsertRelease = db.query(insertRelease);
+    const callInsertRate = db.queruy(insertRate);
+    const callINsertRateUser = db.query(insertRateUser);
+  }
+  else{
+    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
+
+    //how to change the overallRating/rating that already exists??
+    const editRate = 'UPDATE release overallRating Values';
+
+    //run query
+    const callEditRelease = db.query(editRelease);
+    const callEditRate = db.query(editRate);
+  }
+
+//   //button changes color and display average
+   let button = document.getElementById('homeButton3');
+   button.style.backgroundColor = 'pink';
+
+   button = document.getElementById('homeButton1');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton2');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton4');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton5');
+   button.style.backgroundColor = 'grey';
 
 
 };
 
 function rated4(){
+  let rate = 4;
+
+  //way to get album id
+
+  let album_id = albumid;
+  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
+
+  const result = db.query(checkRate);
+
+
+  //if user has not rate before
+  if(result.length == 0)
+  {
+    //inserts album to user_to_release, as they have not yet rated album
+    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
+
+    //inserts rating to release's ratings
+    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
+
+    //inserts rating for the album, into user_to_release
+    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
+
+    //run queries
+    const callInsertRelease = db.query(insertRelease);
+    const callInsertRate = db.queruy(insertRate);
+    const callINsertRateUser = db.query(insertRateUser);
+  }
+  else{
+    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
+
+    //how to change the overallRating/rating that already exists??
+    const editRate = 'UPDATE release overallRating Values';
+
+    //run query
+    const callEditRelease = db.query(editRelease);
+    const callEditRate = db.query(editRate);
+  }
+
+//   //button changes color and display average
+   let button = document.getElementById('homeButton4');
+   button.style.backgroundColor = 'pink';
+
+   button = document.getElementById('homeButton1');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton2');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton3');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton5');
+   button.style.backgroundColor = 'grey';
 
 
 };
 
 function rated5(){
+  let rate = 5;
+
+  //way to get album id
+
+  let album_id = albumid;
+  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
+
+  const result = db.query(checkRate);
+
+
+  //if user has not rate before
+  if(result.length == 0)
+  {
+    //inserts album to user_to_release, as they have not yet rated album
+    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
+
+    //inserts rating to release's ratings
+    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
+
+    //inserts rating for the album, into user_to_release
+    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
+
+    //run queries
+    const callInsertRelease = db.query(insertRelease);
+    const callInsertRate = db.queruy(insertRate);
+    const callINsertRateUser = db.query(insertRateUser);
+  }
+  else{
+    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
+
+    //how to change the overallRating/rating that already exists??
+    const editRate = 'UPDATE release overallRating Values';
+
+    //run query
+    const callEditRelease = db.query(editRelease);
+    const callEditRate = db.query(editRate);
+  }
+
+//   //button changes color and display average
+   let button = document.getElementById('homeButton5');
+   button.style.backgroundColor = 'pink';
+
+   button = document.getElementById('homeButton2');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton3');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton4');
+   button.style.backgroundColor = 'grey';
+   button = document.getElementById('homeButton1');
+   button.style.backgroundColor = 'grey';
 
 
 };
-
-
-
- //TESTNG OTHER WAYS 
-// var rating = document.getElementById('userRating');
-
-// var buttons = document.getElementsByTagName('button');
-    
-// var selectedButtonNumber;
-//     // find button selected
-//     for (var i = 0; i < buttons.length; i++) {
-//         buttons[i].addEventListener('click', function(event) {
-            
-//             if(document.getElementById('button') == enabled)
-//             {
-//               selectedButtonNumber = i;
-//             }
-
-//           })
-//         }
-//         //disable others
-//         for (var i = 0; i < buttons.length; i++) {
-//           if(i != selectedButtonNumber)
-//           {
-//             document.getElementsById('button') = disabled;
-//           }
-
-//         }
-          
-//};
-
-//test
-// app.put('/updateLikes', (req, res) => {
-//   const { like_input } = req.body;
-
-// //TODO: Change attributes of query to fit album database
-// //query to update data in album query  
-
-// const insertRate = 'INSERT INTO release ratings VALUES = $1'
-
-// //add my rate into the release reviews
-// //then we can query / average 
-//maybe get id of image/song/album currently on when pressing button. Then when carousel rotates, refresh button disability
-
-
-// //talk to lilia - she has to edit table for below part to work
-// //eventually, going to have to make it so you can only review once, updating a bool value in a table that user has review that album (user_to_release?)
-
-// // CREATE TABLE review(
-// //   review_id INT PRIMARY KEY,
-// //   username VARCHAR(50) NOT NULL,
-// //   release_id INT,
-// //   title VARCHAR(50) NOT NULL,
-// //   summary TEXT,
-// //   rating INT CHECK (rating >= 1 and rating <= 5) NOT NULL,
-// //   CONSTRAINT FK_review_user FOREIGN KEY (username) REFERENCES users(username),
-// //   CONSTRAINT FK_review_release FOREIGN KEY (release_id) REFERENCES release(release_id),
-// //   CONSTRAINT UQ_user_release_review UNIQUE (username, release_id) -- Ensures that each user can only make one review per release
-// // );
-
-//   res.status(200).json({message: 'Data updated successfully'});
-// });
 
 
 

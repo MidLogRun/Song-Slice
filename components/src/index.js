@@ -244,7 +244,7 @@ app.post('/register', async (req, res) =>
     //Save session info
     req.session.user = insertUser;
     req.session.save();
-    return res.redirect('/home'); //redirect the user to the home page
+    return res.redirect('/homepage'); //redirect the user to the home page
 
   } catch (error) {
     console.error('Error saving user info: ', error);
@@ -277,11 +277,9 @@ app.get('/logout', (req, res) =>
     req.session.destroy();
 
     console.log("User has successfully logged out");
-    return res.redirect('/home');
+    return res.redirect('/login');
   }
-
-  return res.redirect('/login');
-
+  console.log("User not logged in");
 });
 
 /**
@@ -353,9 +351,10 @@ app.get('/homepage', async (req, res) =>
 
 
 /////////////// Beginning of release function
-app.get('/release', (req, res, next) =>
+app.get('/release/:id', (req, res, next) =>
 {
-  spotifyApi.getAlbum('43otFXrY0bgaq5fB3GrZj6')
+ var id = req.params.id;
+  spotifyApi.getAlbum(id)
     .then(
       function (data)
       {

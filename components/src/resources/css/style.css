@@ -32,3 +32,26 @@
   width: 500px;
   overflow: auto;
 }
+
+body{
+  background-color: #2B2B2B;
+}
+
+/*login page*/
+.mt-4{
+  display: flex;
+  flex-direction: column;
+  margin-top: 20%;
+}
+.mt-5{
+  text-align: center;
+  color: white;
+}
+#login-btn{
+  background-color:#FF0077;
+}
+
+.login-button{
+  align-self: center;
+  width: 20vw;
+}

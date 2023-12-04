@@ -365,13 +365,26 @@ app.get('/release/:id', async (req, res, next) =>
     const result =  db.none(insertRelease, id); //insert the album into release database
   }
 
+  const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+  const { overallRating } = await db.oneOrNone(fetchRating, [id]); //will be 0 or null for any albums not yet rated
+
+  console.log("overallRating:" + overallRating);
+
   spotifyApi.getAlbum(id)
     .then(
       function (data)
       {
         // let image = data.body.images[0];
         console.log("Data.body: " + data.body);
-        res.render('pages/release', { albumBody: data.body, image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks , id});
+        res.render('pages/release', {
+          albumBody: data.body, image:
+            data.body.images[0].url, albumName:
+            data.body.name, artist:
+            data.body.artists[0].name, tracks:
+            data.body.tracks,
+            id,
+           overallRating
+        });
 
       },
       function (error)
@@ -397,8 +410,18 @@ app.post('/release/rate', async (req, res, next) => {
           $2,
           $3
         )`;
-  console.log("Rating " + album_id+ " with: " + insertRating,  [req.session.user.username, album_id, rating]);
-  await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+    console.log("Rating " + album_id + " with: " + insertRating, [req.session.user.username, album_id, rating]);
+    await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+
+   //update the average rating in the release table:
+    const updateAverage = `
+      UPDATE release
+      SET overallRating = (
+        SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
+      )
+      WHERE release_id = $1`;
+    console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
+    await db.none(updateAverage, [album_id]);
   }
   else
   {
@@ -410,6 +433,11 @@ app.post('/release/rate', async (req, res, next) => {
     const data = await spotifyApi.getAlbum(album_id);
     const updatedAlbumBody = data.body;
 
+    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+    const { overallRating } = await db.oneOrNone(fetchRating, [album_id]); //will be 0 or null for any albums not yet rated
+
+     console.log("new overallRating :" + overallRating); //overallRating should be display something now
+
     console.log("Rerendering the page with updated data:");
     // Pass the updated Spotify data to the render function
     res.render('pages/release', {
@@ -419,6 +447,8 @@ app.post('/release/rate', async (req, res, next) => {
       artist: updatedAlbumBody.artists[0].name,
       tracks: updatedAlbumBody.tracks,
       id: album_id,
+      overallRating
+
     });
   } catch (error) {
     console.error("Error fetching updated data from Spotify:", error);

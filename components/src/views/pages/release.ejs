@@ -8,6 +8,15 @@
     <% if (image) { %>
       <div class="album-details">
         <img src="<%= image %>" alt="<%= albumName %> Image" class="card-img-top">
+        <p style="color: red;">Overall Rating:</p>
+        <p style="color: pink;">
+          <br>
+        <% if (overallRating != null && overallRating != 0) { %>
+          <%= overallRating %>
+        <% } else { %>
+          This album has no ratings yet. Be the first to rate it!
+        <% } %>
+      </p>
           <div class="btn-group" role="group">
             <form action="/release/rate" method="post">
               <input type="hidden" name="albumID" value="<%= id %>">

@@ -351,28 +351,81 @@ app.get('/homepage', async (req, res) =>
 
 
 /////////////// Beginning of release function
-app.get('/release/:id', (req, res, next) =>
+app.get('/release/:id', async (req, res, next) =>
 {
- var id = req.params.id;
+  var id = req.params.id;
+
+  const testQuery = 'SELECT * FROM release WHERE release_id = $1';
+  const dbID = await db.oneOrNone(testQuery, id);
+
+  if (!dbID)
+  {
+    console.log("Inserting album " + id + " into database");
+    const insertRelease = `INSERT INTO release (release_id) VALUES ($1)`; // SQL Query to insert user
+    const result =  db.none(insertRelease, id); //insert the album into release database
+  }
+
   spotifyApi.getAlbum(id)
     .then(
       function (data)
       {
         // let image = data.body.images[0];
-        res.render('pages/release', { image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks });
+        console.log("Data.body: " + data.body);
+        res.render('pages/release', { body: data.body, image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks , id});
+
       },
       function (error)
       {
-        console.error("This error happened", error);
+        console.error("This error happened:", error);
       }
     )
 });
 
+//////////////// Rate post routine:
+app.post('/release/rate', async (req, res, next) => {
+  const rating = req.body.rating;
+  const album_id = req.body.albumID;
 
+  console.log("Rating album " + album_id + " with " + rating);
+
+  const checkIfRated = 'SELECT 1 FROM user_to_release WHERE release_id = $1';
+  const result = await db.query(checkIfRated, album_id);
+
+  console.log(result);
+
+  if (!result) {
+    const rateQuery = 'INSERT INTO user_to_release (release_id, rating) VALUES ($1, $2)';
+    await db.none(rateQuery, [album_id, rating]);
+  }
+
+  console.log("Rerendering the page with cached data:");
+  // Pass the cached Spotify data to the render function
+  res.render('pages/release', {
+    body: req.body.body, // store Spotify data in cachedData
+    image: req.body.body.images[0].url,
+    albumName: req.body.body.name,
+    artist: req.body.body.artists[0].name,
+    tracks: req.body.body.tracks,
+    id: album_id
+  });
+});
+
+async function rateAlbum(rating, albumID)
+{
+  const checkIfRated = 'SELECT 1 FROM user_to_release WHERE release_id = $1';
+  const result = await db.query(checkIfRated, album_id);
+
+  if (result == null)//Check if the user has already reviewed this album
+  {
+    console.log("Rating album " + album_id + " with " + rating);
+    const rateQuery = 'INSERT INTO user_to_release (rating) VALUES ($1)';
+    await db.none(rateQuery, rateQuery);
+  }
+}
 
 //pass in item id as paramter
 //click on release to show average rating, so not shown on the home for each album (dont worry about it now)
- function rated1(){ 
+ function rated1(){
 
   let rate = 1;
 

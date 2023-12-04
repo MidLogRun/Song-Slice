@@ -4,9 +4,21 @@
 <main>
 
   <div class="album-container">
+    <%- include ('../partials/message') %>
     <% if (image) { %>
       <div class="album-details">
         <img src="<%= image %>" alt="<%= albumName %> Image" class="card-img-top">
+          <div class="btn-group" role="group">
+            <form action="/release/rate" method="post">
+              <input type="hidden" name="albumID" value="<%= id %>">
+              <input type="hidden" name="body" value="<%= body %>">
+              <button class="btn"  id="homeButton1" name="rating" type="submit" value="1">1</button>
+              <button class="btn"  id="homeButton2" name="rating" type="submit" value="2">2</button>
+              <button class="btn"  id="homeButton3" name="rating" type="submit" value="3">3</button>
+              <button class="btn"  id="homeButton4" name="rating" type="submit" value="4">4</button>
+              <button class="btn"  id="homeButton5" name="rating" type="submit" value="5">5</button>
+            </form>
+          </div>
       </div>
 
       <!-- Tracklist: -->
@@ -34,17 +46,8 @@
     <% } %>
   </div>
 
-  <br>
-  <div class="btn-group" role="group" aria-label="Basic example">
-    <button type="button" class="btn btn-secondary">1</button>
-    <button type="button" class="btn btn-secondary">2</button>
-    <button type="button" class="btn btn-secondary">3</button>
-    <button type="button" class="btn btn-secondary">4</button>
-    <button type="button" class="btn btn-secondary">5</button>
-  </div>
-  </br>
 </main>
 
 
-
+<br>
 <%- include ('../partials/footer') %>

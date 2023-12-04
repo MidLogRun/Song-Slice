@@ -6,18 +6,14 @@ CREATE TABLE users (
 
 DROP TABLE IF EXISTS release CASCADE;
 CREATE TABLE release(
-    release_id INT PRIMARY KEY,
-    title varchar(100) NOT NULL,
-    artist varchar(100) NOT NULL,
-    release_year INT NOT NULL,
-    totalTracks INT NOT NULL,
+    release_id varchar(25) PRIMARY KEY,
     overallRating DECIMAL(3,2) -- i think we change this to rating. overall rating will be calculated with a simple average of all ratings in this collum
 );
 
 DROP TABLE IF EXISTS song CASCADE;
 CREATE TABLE song(
     song_id INT PRIMARY KEY,
-    release_id INT,
+    release_id varchar(25),
     songTitle VARCHAR(100) NOT NULL,
     duration_minutes INT NOT NULL,
     duration_seconds INT NOT NULL,
@@ -29,7 +25,7 @@ DROP TABLE IF EXISTS review CASCADE;
 CREATE TABLE review(
     review_id INT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
-    release_id INT,
+    release_id varchar(25),
     title VARCHAR(50) NOT NULL,
     summary TEXT,
     rating INT CHECK (rating >= 1 and rating <= 5) NOT NULL,
@@ -41,7 +37,7 @@ CREATE TABLE review(
 DROP TABLE IF EXISTS userLibrary CASCADE;
 CREATE TABLE userLibrary(
     username VARCHAR(50) NOT NULL,
-    release_id INT,
+    release_id varchar(25),
     CONSTRAINT FK_userLibrary_user FOREIGN KEY (username) REFERENCES users(username),
     CONSTRAINT FK_userLibrary_release FOREIGN KEY (release_id) REFERENCES release(release_id),
     CONSTRAINT PK_userLibrary PRIMARY KEY (username, release_id)
@@ -50,8 +46,8 @@ CREATE TABLE userLibrary(
 DROP TABLE IF EXISTS user_to_release CASCADE;
 CREATE TABLE user_to_release(
     user_id INT,
-    release_id INT; --may need to change to album or something
-    rating INT;
+    release_id varchar(25), --may need to change to album or something
+    rating INT
     --FK's and references, etc;
 );
 

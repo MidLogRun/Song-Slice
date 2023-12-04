@@ -400,7 +400,7 @@ app.get('/release', (req, res, next) =>
     //run queries
     const callInsertRelease = db.query(insertRelease);
     const callInsertRate = db.queruy(insertRate);
-    const callINsertRateUser = db.query(insertRateUser);
+    const callInsertRateUser = db.query(insertRateUser);
   }
   else{
     const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
@@ -454,7 +454,7 @@ function rated2(){
     //run queries
     const callInsertRelease = db.query(insertRelease);
     const callInsertRate = db.queruy(insertRate);
-    const callINsertRateUser = db.query(insertRateUser);
+    const callInsertRateUser = db.query(insertRateUser);
   }
   else{
     const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
@@ -509,7 +509,7 @@ function rated3(){
     //run queries
     const callInsertRelease = db.query(insertRelease);
     const callInsertRate = db.queruy(insertRate);
-    const callINsertRateUser = db.query(insertRateUser);
+    const callInsertRateUser = db.query(insertRateUser);
   }
   else{
     const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
@@ -564,7 +564,7 @@ function rated4(){
     //run queries
     const callInsertRelease = db.query(insertRelease);
     const callInsertRate = db.queruy(insertRate);
-    const callINsertRateUser = db.query(insertRateUser);
+    const callInsertRateUser = db.query(insertRateUser);
   }
   else{
     const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
@@ -619,7 +619,7 @@ function rated5(){
     //run queries
     const callInsertRelease = db.query(insertRelease);
     const callInsertRate = db.queruy(insertRate);
-    const callINsertRateUser = db.query(insertRateUser);
+    const callInsertRateUser = db.query(insertRateUser);
   }
   else{
     const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';

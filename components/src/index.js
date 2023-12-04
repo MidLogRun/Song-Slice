@@ -346,7 +346,7 @@ app.get('/homepage', async (req, res) =>
     res.render('pages/homepage', { IDs, images, names, artists }); //render the homepage with these attributes
   } catch (error)
   {
-    console.error("Error loading the homepage");
+    console.error("Error loading the homepage", error);
     res.status(500).send("Error loading the homepage");
   }
 });

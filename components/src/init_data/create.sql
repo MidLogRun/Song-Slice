@@ -45,9 +45,12 @@ CREATE TABLE userLibrary(
 
 DROP TABLE IF EXISTS user_to_release CASCADE;
 CREATE TABLE user_to_release(
-    user_id INT,
-    release_id varchar(25), --may need to change to album or something
-    rating INT
+    username VARCHAR(50),
+    release_id VARCHAR(25), --may need to change to album or something
+    rating INT,
+    CONSTRAINT FK_user_to_release_user FOREIGN KEY (username) REFERENCES users(username),
+    CONSTRAINT FK_user_to_release_release FOREIGN KEY (release_id) REFERENCES release(release_id),
+    CONSTRAINT PK_user_to_release PRIMARY KEY (username, release_id)
     --FK's and references, etc;
 );
 

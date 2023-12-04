@@ -11,7 +11,7 @@
           <div class="btn-group" role="group">
             <form action="/release/rate" method="post">
               <input type="hidden" name="albumID" value="<%= id %>">
-              <input type="hidden" name="body" value="<%= body %>">
+              <input type="hidden" name="albumBody" value="<%= JSON.stringify(albumBody) %>">
               <button class="btn"  id="homeButton1" name="rating" type="submit" value="1">1</button>
               <button class="btn"  id="homeButton2" name="rating" type="submit" value="2">2</button>
               <button class="btn"  id="homeButton3" name="rating" type="submit" value="3">3</button>

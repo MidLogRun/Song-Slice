@@ -371,7 +371,7 @@ app.get('/release/:id', async (req, res, next) =>
       {
         // let image = data.body.images[0];
         console.log("Data.body: " + data.body);
-        res.render('pages/release', { body: data.body, image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks , id});
+        res.render('pages/release', { albumBody: data.body, image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks , id});
 
       },
       function (error)
@@ -386,28 +386,46 @@ app.post('/release/rate', async (req, res, next) => {
   const rating = req.body.rating;
   const album_id = req.body.albumID;
 
-  console.log("Rating album " + album_id + " with " + rating);
+  const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
+  const ratingExists = await db.oneOrNone(checkRating, [req.session.user.username, album_id]); //check if the rating exists
 
-  const checkIfRated = 'SELECT 1 FROM user_to_release WHERE release_id = $1';
-  const result = await db.query(checkIfRated, album_id);
+  if (!ratingExists) //if rating does not exist, rate it!
+  {
+     const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
+      VALUES (
+          (SELECT username from users WHERE username = $1),
+          $2,
+          $3
+        )`;
+  console.log("Rating " + album_id+ " with: " + insertRating,  [req.session.user.username, album_id, rating]);
+  await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+  }
+  else
+  {
+    console.log("User has already rated this page");
+    ///TODO add functionality for user to UPDATE their rating:
+  }
+//RE-render the page:
+   try {
+    const data = await spotifyApi.getAlbum(album_id);
+    const updatedAlbumBody = data.body;
 
-  console.log(result);
-
-  if (!result) {
-    const rateQuery = 'INSERT INTO user_to_release (release_id, rating) VALUES ($1, $2)';
-    await db.none(rateQuery, [album_id, rating]);
+    console.log("Rerendering the page with updated data:");
+    // Pass the updated Spotify data to the render function
+    res.render('pages/release', {
+      albumBody: updatedAlbumBody,
+      image: updatedAlbumBody.images[0].url,
+      albumName: updatedAlbumBody.name,
+      artist: updatedAlbumBody.artists[0].name,
+      tracks: updatedAlbumBody.tracks,
+      id: album_id,
+    });
+  } catch (error) {
+    console.error("Error fetching updated data from Spotify:", error);
+    // Handle the error appropriately
+    res.status(500).send("Internal Server Error");
   }
 
-  console.log("Rerendering the page with cached data:");
-  // Pass the cached Spotify data to the render function
-  res.render('pages/release', {
-    body: req.body.body, // store Spotify data in cachedData
-    image: req.body.body.images[0].url,
-    albumName: req.body.body.name,
-    artist: req.body.body.artists[0].name,
-    tracks: req.body.body.tracks,
-    id: album_id
-  });
 });
 
 async function rateAlbum(rating, albumID)

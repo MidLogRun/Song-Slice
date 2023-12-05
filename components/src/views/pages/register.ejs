@@ -1,6 +1,9 @@
 <%- include ('../partials/header') %>
 
 <main>
+
+  <img src="../../resources/img/DarkLogo.png" width="201.5" height="30" alt="" id = "logo">
+  
   <div class="container">
     <h2 class="mt-5">Register</h2>
     <div class="col"><%- include ('../partials/message') %></div>
@@ -8,16 +11,16 @@
     <!-- Form for user registration -->
     <form action="/register" method="POST" class="mt-4">
       <div class="mb-3">
-        <label for="username" class="form-label">Username</label>
-        <input type="text" class="form-control" id="username" name="username" required>
+        <!-- <label for="username" class="form-label">Username</label> -->
+        <input type="text" placeholder="Username" class="form-control" id="username" name="username" required>
       </div>
 
       <div class="mb-3">
-        <label for="password" class="form-label">Password</label>
-        <input type="password" class="form-control" id="password" name="password" required>
+        <!-- <label for="password" class="form-label">Password</label> -->
+        <input type="password" placeholder = "Password" class="form-control" id="password" name="password" required>
       </div>
 
-      <button type="submit" class="btn btn-primary">Register</button>
+      <button type="submit" id = "register-button" class="btn btn-primary">Register</button>
     </form>
 
     <!-- Option to redirect registered users to the login page -->

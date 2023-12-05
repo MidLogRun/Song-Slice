@@ -4,7 +4,7 @@
 <%- include ('../partials/menu') %>
 
 <main>
-  <h1 class="text-centered">Homepage</h1>
+  <h1 class="text-centered" id="homepage-title">Review an album below.</h1>
 
     <div id="albumCarousel" class="carousel slide" data-bs-ride="carousel">
         <ol class="carousel-indicators">
@@ -19,8 +19,8 @@
                 <a href="/release/<%= albumID %>">
                     <img src="<%= images[index] %>" class="d-block w-100" alt="<%= names[index] %> Image">
                     <div class="carousel-caption d-none d-md-block">
-                        <h2><%= names[index] %></h5>
-                        <p><%= artists[index] %></p>
+                        <h2 id="highlight"><%= names[index] %></h5>
+                        <p id="highlight"><%= artists[index] %></p>
                         <p>Album ID: <%= albumID %></p>
                     </div>
                 </a>

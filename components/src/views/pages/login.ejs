@@ -1,6 +1,9 @@
 <%- include ('../partials/header') %>
 
 <main>
+
+  <img src="../../resources/img/DarkLogo.png" width="201.5" height="30" alt="" id = "logo">
+  
   <div class="container"> 
     <h2 class="mt-5">Login</h2>
     <div class="col"><%- include ('../partials/message') %></div>
@@ -21,10 +24,11 @@
     </form>
 
     <!-- Option to redirect unregistered users to the registration page -->
-    <p class="mt-3">
-      Don't have an account? <a href="/register">Register here</a>.
+    <p id="register_button" class="mt-3" >
+      Don't have an account? <a href="/register">Register here.</a>
     </p>
   </div>
+  
 </main>
 
 

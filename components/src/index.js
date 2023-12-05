@@ -229,20 +229,22 @@ app.post('/register', async (req, res) =>
 
   try {
     const saltRounds = 10;
-    console.log("user password is: " + userPassword);
-    const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
 
+    const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
     const insertUser = 'INSERT INTO users (username, password) VALUES ($1, $2)'; // SQL Query to insert user
 
     //insert the user into database
-    const result = await db.none(insertUser, [
+    await db.none(insertUser, [
       username,
       hashWord
     ]);
 
     console.log("User registered successfully.");
+    const userQuery = 'SELECT * FROM users WHERE username = $1';
+    const user = await db.oneOrNone(userQuery, [username]); //query the database to see if the user is there
     //Save session info
-    req.session.user = insertUser;
+     console.log("username is: " + user.username);
+    req.session.user = user;
     req.session.save();
     return res.redirect('/homepage'); //redirect the user to the home page
 
@@ -350,307 +352,126 @@ app.get('/homepage', async (req, res) =>
 });
 
 
-/////////////// Beginning of release function
-app.get('/release/:id', (req, res, next) =>
-{
- var id = req.params.id;
-  spotifyApi.getAlbum(id)
-    .then(
-      function (data)
-      {
-        // let image = data.body.images[0];
-        res.render('pages/release', { image: data.body.images[0].url, albumName: data.body.name, artist: data.body.artists[0].name, tracks: data.body.tracks });
-      },
-      function (error)
-      {
-        console.error("This error happened", error);
-      }
-    )
+/////////////// RELEASE ROUTE
+//5mwOo1zikswhmfHvtqVSXg for debug
+app.get('/release/:id', async (req, res, next) => {
+  try {
+    var id = req.params.id;
+
+    const testQuery = 'SELECT * FROM release WHERE release_id = $1';
+    const release = await db.oneOrNone(testQuery, id);
+
+    if (!release) {
+      console.log("Inserting album " + id + " into database");
+      const insertRelease = 'INSERT INTO release (release_id) VALUES ($1)';
+      await db.none(insertRelease, id);
+    }
+
+    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+    const result = await db.oneOrNone(fetchRating, id);
+
+
+    const avgRating = result.overallrating;
+    console.dir({ result });
+    console.log("overallRating = " + avgRating);
+
+    const data = await spotifyApi.getAlbum(id); //pass data to render function
+    res.render('pages/release', {
+      albumBody: data.body,
+      image: data.body.images[0].url,
+      albumName: data.body.name,
+      artist: data.body.artists[0].name,
+      tracks: data.body.tracks,
+      id,
+      avgRating
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle the error appropriately
+    res.status(500).send("Internal Server Error");
+  }
 });
 
 
 
+///////////////////////////////////////////////////////////// RATE ROUTE
+app.post('/release/rate', async (req, res, next) => {
+  const rating = req.body.rating;
+  const album_id = req.body.albumID;
+
+  const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
+  const ratingExists = await db.oneOrNone(checkRating, [req.session.user.username, album_id]); //check if the rating exists
+
+  if (!ratingExists) //if rating does not exist, rate it!
+  {
+     const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
+      VALUES (
+          (SELECT username from users WHERE username = $1),
+          $2,
+          $3
+        )`;
+    console.log("Rating " + album_id + " with: " + insertRating, [req.session.user.username, album_id, rating]);
+    await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+
+   //update the average rating in the release table:
+    const updateAverage = `
+      UPDATE release
+      SET overallRating = (
+        SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
+      )
+      WHERE release_id = $1`;
+    console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
+    await db.none(updateAverage, album_id);
+  }
+  else
+  {
+    console.log("User has already rated this page");
+    ///TODO add functionality for user to UPDATE their rating:
+  }
+//RE-render the page:
+   try {
+    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+    const result = await db.oneOrNone(fetchRating, album_id);
+    const avgRating = result.overallrating;
+
+    console.log("overallRating = " + avgRating);
+    const data = await spotifyApi.getAlbum(album_id);
+    const updatedAlbumBody = data.body;
+    console.log("Rerendering the page with updated data:");
+    // Pass the updated Spotify data to the render function
+    res.render('pages/release', {
+      albumBody: updatedAlbumBody,
+      image: updatedAlbumBody.images[0].url,
+      albumName: updatedAlbumBody.name,
+      artist: updatedAlbumBody.artists[0].name,
+      tracks: updatedAlbumBody.tracks,
+      id: album_id,
+      avgRating
+
+    });
+  } catch (error) {
+    console.error("Error fetching updated data from Spotify:", error);
+    // Handle the error appropriately
+    res.status(500).send("Internal Server Error");
+  }
+
+});
+
+async function rateAlbum(rating, albumID)
+{
+  const checkIfRated = 'SELECT 1 FROM user_to_release WHERE release_id = $1';
+  const result = await db.query(checkIfRated, album_id);
+
+  if (result == null)//Check if the user has already reviewed this album
+  {
+    console.log("Rating album " + album_id + " with " + rating);
+    const rateQuery = 'INSERT INTO user_to_release (rating) VALUES ($1)';
+    await db.none(rateQuery, rateQuery);
+  }
+}
+
 //pass in item id as paramter
 //click on release to show average rating, so not shown on the home for each album (dont worry about it now)
- function rated1(){ 
-
-  let rate = 1;
-
-  //way to get album id
-
-  let album_id = albumid;
-  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
-
-  const result = db.query(checkRate);
-
-
-  //if user has not rate before
-  if(result.length == 0)
-  {
-    //inserts album to user_to_release, as they have not yet rated album
-    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
-
-    //inserts rating to release's ratings
-    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
-
-    //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
-
-    //run queries
-    const callInsertRelease = db.query(insertRelease);
-    const callInsertRate = db.queruy(insertRate);
-    const callInsertRateUser = db.query(insertRateUser);
-  }
-  else{
-    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
-
-    //how to change the overallRating/rating that already exists??
-    const editRate = 'UPDATE release overallRating Values';
-
-    //run query
-    const callEditRelease = db.query(editRelease);
-    const callEditRate = db.query(editRate);
-  }
-
-//   //button changes color and display average
-   let button = document.getElementById('homeButton1');
-   button.style.backgroundColor = 'pink';
-
-   button = document.getElementById('homeButton2');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton3');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton4');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton5');
-   button.style.backgroundColor = 'grey';
-
-};
-
-function rated2(){
-  let rate = 2;
-
-  //way to get album id
-
-  let album_id = albumid;
-  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
-
-  const result = db.query(checkRate);
-
-
-  //if user has not rate before
-  if(result.length == 0)
-  {
-    //inserts album to user_to_release, as they have not yet rated album
-    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
-
-    //inserts rating to release's ratings
-    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
-
-    //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
-
-    //run queries
-    const callInsertRelease = db.query(insertRelease);
-    const callInsertRate = db.queruy(insertRate);
-    const callInsertRateUser = db.query(insertRateUser);
-  }
-  else{
-    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
-
-    //how to change the overallRating/rating that already exists??
-    const editRate = 'UPDATE release overallRating Values';
-
-    //run query
-    const callEditRelease = db.query(editRelease);
-    const callEditRate = db.query(editRate);
-  }
-
-//   //button changes color and display average
-   let button = document.getElementById('homeButton2');
-   button.style.backgroundColor = 'pink';
-
-   button = document.getElementById('homeButton1');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton3');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton4');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton5');
-   button.style.backgroundColor = 'grey';
-
-
-};
-
-function rated3(){
-  let rate = 3;
-
-  //way to get album id
-
-  let album_id = albumid;
-  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
-
-  const result = db.query(checkRate);
-
-
-  //if user has not rate before
-  if(result.length == 0)
-  {
-    //inserts album to user_to_release, as they have not yet rated album
-    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
-
-    //inserts rating to release's ratings
-    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
-
-    //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
-
-    //run queries
-    const callInsertRelease = db.query(insertRelease);
-    const callInsertRate = db.queruy(insertRate);
-    const callInsertRateUser = db.query(insertRateUser);
-  }
-  else{
-    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
-
-    //how to change the overallRating/rating that already exists??
-    const editRate = 'UPDATE release overallRating Values';
-
-    //run query
-    const callEditRelease = db.query(editRelease);
-    const callEditRate = db.query(editRate);
-  }
-
-//   //button changes color and display average
-   let button = document.getElementById('homeButton3');
-   button.style.backgroundColor = 'pink';
-
-   button = document.getElementById('homeButton1');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton2');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton4');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton5');
-   button.style.backgroundColor = 'grey';
-
-
-};
-
-function rated4(){
-  let rate = 4;
-
-  //way to get album id
-
-  let album_id = albumid;
-  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
-
-  const result = db.query(checkRate);
-
-
-  //if user has not rate before
-  if(result.length == 0)
-  {
-    //inserts album to user_to_release, as they have not yet rated album
-    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
-
-    //inserts rating to release's ratings
-    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
-
-    //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
-
-    //run queries
-    const callInsertRelease = db.query(insertRelease);
-    const callInsertRate = db.queruy(insertRate);
-    const callInsertRateUser = db.query(insertRateUser);
-  }
-  else{
-    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
-
-    //how to change the overallRating/rating that already exists??
-    const editRate = 'UPDATE release overallRating Values';
-
-    //run query
-    const callEditRelease = db.query(editRelease);
-    const callEditRate = db.query(editRate);
-  }
-
-//   //button changes color and display average
-   let button = document.getElementById('homeButton4');
-   button.style.backgroundColor = 'pink';
-
-   button = document.getElementById('homeButton1');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton2');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton3');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton5');
-   button.style.backgroundColor = 'grey';
-
-
-};
-
-function rated5(){
-  let rate = 5;
-
-  //way to get album id
-
-  let album_id = albumid;
-  const checkRate = 'SELECT 1 FROM user_to_release WHERE release_id = album_id';
-
-  const result = db.query(checkRate);
-
-
-  //if user has not rate before
-  if(result.length == 0)
-  {
-    //inserts album to user_to_release, as they have not yet rated album
-    const insertRelease = 'INSERT INTO user_to_release release_id VALUES = album_id'; //insert the album into the release_id collum
-
-    //inserts rating to release's ratings
-    const insertRate = 'INSERT INTO release overallRating VALUES = rate'; //check if this adds, not replaces all ratings
-
-    //inserts rating for the album, into user_to_release
-    const insertRateUser = 'INSERT INTO user_to_release rating = rate WHERE release_id = album_id';
-
-    //run queries
-    const callInsertRelease = db.query(insertRelease);
-    const callInsertRate = db.queruy(insertRate);
-    const callInsertRateUser = db.query(insertRateUser);
-  }
-  else{
-    const editRelease = 'UPDATE user_to_release SET rating = rate WHERE release_id = album_id';
-
-    //how to change the overallRating/rating that already exists??
-    const editRate = 'UPDATE release overallRating Values';
-
-    //run query
-    const callEditRelease = db.query(editRelease);
-    const callEditRate = db.query(editRate);
-  }
-
-//   //button changes color and display average
-   let button = document.getElementById('homeButton5');
-   button.style.backgroundColor = 'pink';
-
-   button = document.getElementById('homeButton2');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton3');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton4');
-   button.style.backgroundColor = 'grey';
-   button = document.getElementById('homeButton1');
-   button.style.backgroundColor = 'grey';
-
-
-};
-
-
-
-
-
 
 
 // *****************************************************

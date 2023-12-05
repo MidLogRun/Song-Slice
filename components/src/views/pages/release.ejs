@@ -11,8 +11,8 @@
         <p style="color: red;">Overall Rating:</p>
         <p style="color: pink;">
           <br>
-        <% if (overallRating != null && overallRating != 0) { %>
-          <%= overallRating %>
+        <% if (avgRating != null && avgRating != 0) { %>
+          <%= avgRating %>
         <% } else { %>
           This album has no ratings yet. Be the first to rate it!
         <% } %>
@@ -21,11 +21,11 @@
             <form action="/release/rate" method="post">
               <input type="hidden" name="albumID" value="<%= id %>">
               <input type="hidden" name="albumBody" value="<%= JSON.stringify(albumBody) %>">
-              <button class="btn"  id="homeButton1" name="rating" type="submit" value="1">1</button>
-              <button class="btn"  id="homeButton2" name="rating" type="submit" value="2">2</button>
-              <button class="btn"  id="homeButton3" name="rating" type="submit" value="3">3</button>
-              <button class="btn"  id="homeButton4" name="rating" type="submit" value="4">4</button>
-              <button class="btn"  id="homeButton5" name="rating" type="submit" value="5">5</button>
+              <button class="btn"  id="homeButton1" name="rating" type="submit" value="1.0">1</button>
+              <button class="btn"  id="homeButton2" name="rating" type="submit" value="2.0">2</button>
+              <button class="btn"  id="homeButton3" name="rating" type="submit" value="3.0">3</button>
+              <button class="btn"  id="homeButton4" name="rating" type="submit" value="4.0">4</button>
+              <button class="btn"  id="homeButton5" name="rating" type="submit" value="5.0">5</button>
             </form>
           </div>
       </div>

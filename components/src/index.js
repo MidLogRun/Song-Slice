@@ -229,20 +229,22 @@ app.post('/register', async (req, res) =>
 
   try {
     const saltRounds = 10;
-    console.log("user password is: " + userPassword);
-    const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
 
+    const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
     const insertUser = 'INSERT INTO users (username, password) VALUES ($1, $2)'; // SQL Query to insert user
 
     //insert the user into database
-    const result = await db.none(insertUser, [
+    await db.none(insertUser, [
       username,
       hashWord
     ]);
 
     console.log("User registered successfully.");
+    const userQuery = 'SELECT * FROM users WHERE username = $1';
+    const user = await db.oneOrNone(userQuery, [username]); //query the database to see if the user is there
     //Save session info
-    req.session.user = insertUser;
+     console.log("username is: " + user.username);
+    req.session.user = user;
     req.session.save();
     return res.redirect('/homepage'); //redirect the user to the home page
 
@@ -351,48 +353,45 @@ app.get('/homepage', async (req, res) =>
 
 
 /////////////// RELEASE ROUTE
-app.get('/release/:id', async (req, res, next) =>
-{
-  var id = req.params.id;
+//5mwOo1zikswhmfHvtqVSXg for debug
+app.get('/release/:id', async (req, res, next) => {
+  try {
+    var id = req.params.id;
 
-  const testQuery = 'SELECT * FROM release WHERE release_id = $1';
-  const dbID = await db.oneOrNone(testQuery, id);
+    const testQuery = 'SELECT * FROM release WHERE release_id = $1';
+    const release = await db.oneOrNone(testQuery, id);
 
-  if (!dbID)
-  {
-    console.log("Inserting album " + id + " into database");
-    const insertRelease = `INSERT INTO release (release_id) VALUES ($1)`; // SQL Query to insert user
-    const result =  db.none(insertRelease, id); //insert the album into release database
+    if (!release) {
+      console.log("Inserting album " + id + " into database");
+      const insertRelease = 'INSERT INTO release (release_id) VALUES ($1)';
+      await db.none(insertRelease, id);
+    }
+
+    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+    const result = await db.oneOrNone(fetchRating, id);
+
+
+    const avgRating = result.overallrating;
+    console.dir({ result });
+    console.log("overallRating = " + avgRating);
+
+    const data = await spotifyApi.getAlbum(id); //pass data to render function
+    res.render('pages/release', {
+      albumBody: data.body,
+      image: data.body.images[0].url,
+      albumName: data.body.name,
+      artist: data.body.artists[0].name,
+      tracks: data.body.tracks,
+      id,
+      avgRating
+    });
+  } catch (error) {
+    console.error("Error:", error);
+    // Handle the error appropriately
+    res.status(500).send("Internal Server Error");
   }
-
-  const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
-  const { overallRating } = await db.oneOrNone(fetchRating, [id]); //will be 0 or null for any albums not yet rated
-
-  console.log("overallRating:" + overallRating);
-
-  spotifyApi.getAlbum(id)
-    .then(
-      function (data)
-      {
-        // let image = data.body.images[0];
-        console.log("Data.body: " + data.body);
-        res.render('pages/release', {
-          albumBody: data.body, image:
-            data.body.images[0].url, albumName:
-            data.body.name, artist:
-            data.body.artists[0].name, tracks:
-            data.body.tracks,
-            id,
-           overallRating
-        });
-
-      },
-      function (error)
-      {
-        console.error("This error happened:", error);
-      }
-    )
 });
+
 
 
 ///////////////////////////////////////////////////////////// RATE ROUTE
@@ -431,14 +430,13 @@ app.post('/release/rate', async (req, res, next) => {
   }
 //RE-render the page:
    try {
+    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+    const result = await db.oneOrNone(fetchRating, album_id);
+    const avgRating = result.overallrating;
+
+    console.log("overallRating = " + avgRating);
     const data = await spotifyApi.getAlbum(album_id);
     const updatedAlbumBody = data.body;
-
-    const fetchRating = 'SELECT * FROM release WHERE release_id = $1';
-    const { overallRating } = await db.oneOrNone(fetchRating, album_id); //will be 0 or null for any albums not yet rated
-
-     console.log("new overallRating :" + overallRating); //overallRating should be display something now
-
     console.log("Rerendering the page with updated data:");
     // Pass the updated Spotify data to the render function
     res.render('pages/release', {
@@ -448,7 +446,7 @@ app.post('/release/rate', async (req, res, next) => {
       artist: updatedAlbumBody.artists[0].name,
       tracks: updatedAlbumBody.tracks,
       id: album_id,
-      overallRating
+      avgRating
 
     });
   } catch (error) {

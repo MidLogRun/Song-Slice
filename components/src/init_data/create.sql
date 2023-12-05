@@ -7,7 +7,7 @@ CREATE TABLE users (
 DROP TABLE IF EXISTS release CASCADE;
 CREATE TABLE release(
     release_id varchar(25) PRIMARY KEY,
-    overallRating DECIMAL(3,2) -- i think we change this to rating. overall rating will be calculated with a simple average of all ratings in this collum
+    overallRating DECIMAL(3,2)  CHECK (overallRating >= 0 AND overallRating <= 5)
 );
 
 DROP TABLE IF EXISTS song CASCADE;
@@ -47,7 +47,7 @@ DROP TABLE IF EXISTS user_to_release CASCADE;
 CREATE TABLE user_to_release(
     username VARCHAR(50),
     release_id VARCHAR(25), --may need to change to album or something
-    rating INT,
+    rating DECIMAL(3,2),
     CONSTRAINT FK_user_to_release_user FOREIGN KEY (username) REFERENCES users(username),
     CONSTRAINT FK_user_to_release_release FOREIGN KEY (release_id) REFERENCES release(release_id),
     CONSTRAINT PK_user_to_release PRIMARY KEY (username, release_id)

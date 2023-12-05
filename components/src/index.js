@@ -350,7 +350,7 @@ app.get('/homepage', async (req, res) =>
 });
 
 
-/////////////// Beginning of release function
+/////////////// RELEASE ROUTE
 app.get('/release/:id', async (req, res, next) =>
 {
   var id = req.params.id;
@@ -394,7 +394,8 @@ app.get('/release/:id', async (req, res, next) =>
     )
 });
 
-//////////////// Rate post routine:
+
+///////////////////////////////////////////////////////////// RATE ROUTE
 app.post('/release/rate', async (req, res, next) => {
   const rating = req.body.rating;
   const album_id = req.body.albumID;
@@ -421,7 +422,7 @@ app.post('/release/rate', async (req, res, next) => {
       )
       WHERE release_id = $1`;
     console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
-    await db.none(updateAverage, [album_id]);
+    await db.none(updateAverage, album_id);
   }
   else
   {
@@ -433,8 +434,8 @@ app.post('/release/rate', async (req, res, next) => {
     const data = await spotifyApi.getAlbum(album_id);
     const updatedAlbumBody = data.body;
 
-    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
-    const { overallRating } = await db.oneOrNone(fetchRating, [album_id]); //will be 0 or null for any albums not yet rated
+    const fetchRating = 'SELECT * FROM release WHERE release_id = $1';
+    const { overallRating } = await db.oneOrNone(fetchRating, album_id); //will be 0 or null for any albums not yet rated
 
      console.log("new overallRating :" + overallRating); //overallRating should be display something now
 

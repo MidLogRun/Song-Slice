@@ -10,7 +10,7 @@
         <img src="<%= image %>" alt="<%= albumName %> Image" class="card-img-top">
         <!-- Rating information div-->
         <div class="rating-information">
-          <h3 class="review-text">Your Review:</h1>
+          <h3 class="review-text">Your Rating:</h1>
 
            <p class="review-subtext">
         <% if (userRating != null && userRating != 0) { %>
@@ -22,7 +22,7 @@
         <% } %>
       </p>
 
-      <h3 class="review-text">Average Review: </h1>
+      <h3 class="review-text">Average Rating: </h1>
          <p class="review-subtext">
 
         <% if (avgRating != null && avgRating != 0) { %>

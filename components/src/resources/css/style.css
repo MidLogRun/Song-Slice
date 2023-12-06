@@ -4,28 +4,42 @@
     align-items: center;
   }
 
-  .btn {
-    background-color: #505050;
+
+
+  .btn  {
+    background-color: #FFD700;
     border-radius: 5px;
   }
 
-  .btn btn-primary {
+  .btn:hover {
     background-color: #FF0077;
     border-radius: 5px;
   }
 
   .album-container {
   display: flex;
+  /* flex-direction:  */
   align-items: flex-start;
 }
 
 .album-details {
-  border: 2px solid #000;
+  /* border: 2px solid #000; */
   padding: 10px;
   margin: 10px;
-  height: 450px;
-  width: 400px;
+  height: 500x;
+  width: 100%;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
 }
+
+.rating-information{
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+
 
 .tracklist {
   margin-left: 20px; /* Adjust this value based on your preference */
@@ -89,14 +103,14 @@ header{
 .tracklist{
   border-radius: 5px;
   background-color: #5A5A5A;
-  width: 55vw;
+  width: 50%;
   border: 1px solid #2B2B2B;
   margin-top: 2%;
   border-collapse: separate;
   border-spacing: 0px;
   border-width: 0px;
 
-  
+
   /* padding-left: 2%; */
 }
 
@@ -110,14 +124,25 @@ th{
 }
 tr{
   color:white;
-  
+
 
 }
 .album-details{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  margin-right: auto;
 }
+
+.album-image{
+  width: 40%;
+  height: auto;
+  flex-direction: column;
+
+}
+
+
+
 #album-name{
   color: white;
 }
@@ -166,7 +191,7 @@ tr{
   background-color:#ff0077b3;
   border-radius: 10px;
   font-size: 10;
-  
+
 }
 
 
@@ -179,3 +204,55 @@ tr{
   align-self: center;
 }
 
+/*Typography: */
+.review-text{
+  color: #FF0077;
+  font-size: 25px;
+}
+
+.review-subtext{
+  color:#d8d8d8;
+
+}
+
+.review-header {
+  color: #FF0077;
+  font-size: 25px;
+  text-align: center;
+}
+
+
+/*Star icon:*/
+.star-container{
+  position: relative;
+  display: inline-block;
+}
+
+.star-image{
+  width: 80px;
+}
+
+.star-number{
+  position: absolute;
+  top: 50%; /* Adjust the top position */
+  left: 50%; /* Adjust the left position */
+  transform: translate(-50%, -50%);
+  font-size: 15px; /* Adjust the font size of the number */
+  font-weight: bold;
+  color: #000;
+}
+
+/* Reviews: */
+.comment-card {
+
+    position: bottom right;
+    margin-top: 20px; /* Adjust the margin as needed */
+    padding: 15px;
+    background-color: rgb(255, 142, 142); /* Adjust the background color as needed */
+    border: 1px solid #000000; /* Adjust the border color as needed */
+    border-radius: 50px; /* Adjust the border radius as needed */
+  }
+
+.comment-p {
+  margin-bottom: 10px; /* Adjust the margin as needed */
+}

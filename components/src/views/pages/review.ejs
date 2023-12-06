@@ -1,0 +1,15 @@
+<%- include ('../partials/header') %>
+<%- include ('../partials/menu') %>
+
+<main>
+    <div>
+        <h1 class="review-text"><%= album_title%></h1>
+       <form action="/review" method="POST">
+        <textarea id="reviewInput" name="review" placeholder="Write your review..." cols="30" rows="10" maxlength="200"></textarea>
+        <input type="hidden" name="album_id" value="<%=album_id%>">
+        <button type="btn">Submit Review</button>
+       </form>
+
+    </div>
+</main>
+<%- include ('../partials/footer') %>

@@ -156,6 +156,7 @@ app.get('/login', (req, res) => {
 // login POST routine:
 app.post('/login', async (req, res) =>
 {
+  // res.status(200);
   const usrname = req.body.username;
   const password = req.body.password;
 
@@ -166,6 +167,8 @@ app.post('/login', async (req, res) =>
   {
     if (!usrname || !password)
     {
+      //added status here
+      // res.status(500);
       return res.render('pages/login', { message: 'Username and password are both required for login' });
     }
 
@@ -194,6 +197,9 @@ app.post('/login', async (req, res) =>
     req.session.save();
 
     //res.json({status: 'Login success!', message: 'Welcome!'});
+
+    //added
+    // res.status(200); 
     return res.redirect('/homepage');
 
 
@@ -245,6 +251,10 @@ app.post('/register', async (req, res) =>
     //Save session info
      console.log("username is: " + user.username);
     req.session.user = user;
+    //res updates
+    res.status(200).json({message: 'registered successfully'});
+    // res.json({status: 'success', message: 'Welcome!'});
+
     req.session.save();
     return res.redirect('/homepage'); //redirect the user to the home page
 

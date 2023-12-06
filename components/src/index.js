@@ -354,10 +354,10 @@ app.get('/homepage', async (req, res) =>
 
 /////////////// RELEASE ROUTE
 //5mwOo1zikswhmfHvtqVSXg for debug
-async function rateAlbum(rating, albumID)
+async function rateAlbum(rating, album_id, username)
 {
   const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
-  const ratingExists = await db.oneOrNone(checkRating, [req.session.user.username, album_id]); //check if the rating exists
+  const ratingExists = await db.oneOrNone(checkRating, [username, album_id]); //check if the rating exists
 
   if (!ratingExists)
   {
@@ -367,48 +367,78 @@ async function rateAlbum(rating, albumID)
           $2,
           $3
         )`;
-    console.log("Rating " + album_id + " with: " + insertRating, [req.session.user.username, album_id, rating]);
-    await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+    console.log("Rating " + album_id + " with: " + insertRating, [username, album_id, rating]);
+    await db.none(insertRating, [username, album_id, rating]); //insert the rating into the DB
 
-   //update the average rating in the release table:
-    const updateAverage = `
+  }
+  else
+  {
+    const updateRating = `UPDATE user_to_release
+    SET rating = $1
+    WHERE release_id = $2 AND username = $3`;
+
+    console.log("Updating user " + username +  "'s rating for " + album_id);
+    await db.none(updateRating, [rating, album_id, username]);
+  }
+  //regardless of what the user is doing, update the rating:
+   const updateAverage = `
       UPDATE release
       SET overallRating = (
         SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
       )
-      WHERE release_id = $1`;
+      WHERE release_id = $1`; //updates the average rating in the release table
+
+
+
+
     console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
     await db.none(updateAverage, album_id);
-  }
-  else
-  {
-    const updateRating = `UPDATE user_to_release (username,release_id, rating)
-      VALUES (
-        (SELECT username from users WHERE username = $1)
-      ) `;
-    }
+
+
 }
 
-app.get('/release/:id', async (req, res, next) => {
-  try {
-    var id = req.params.id;
+async function getTotalRatings(album_id)
+{
+  const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
+  const result = await db.oneOrNone(fetchRating, album_id);
+  const avgRating = result.overallrating;
 
+  //display the rating to console:
+  console.dir({ result });
+  console.log("overallRating = " + avgRating);
+  return avgRating;
+
+}
+
+async function getUserRating(album_id, username)
+{
+  const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
+  const ratingObj = await db.oneOrNone(checkRating, [username, album_id]); //check if the rating exists
+
+  if (ratingObj)
+  {
+    return ratingObj.rating;
+  }
+
+}
+
+app.get('/release/:id', async (req, res, next) =>
+{
+   var id = req.params.id;
+  try {
+
+    //Is the album currently in our database?:
     const testQuery = 'SELECT * FROM release WHERE release_id = $1';
     const release = await db.oneOrNone(testQuery, id);
 
+    //if not:
     if (!release) {
       console.log("Inserting album " + id + " into database");
       const insertRelease = 'INSERT INTO release (release_id) VALUES ($1)';
       await db.none(insertRelease, id);
     }
-
-    const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
-    const result = await db.oneOrNone(fetchRating, id);
-
-
-    const avgRating = result.overallrating;
-    console.dir({ result });
-    console.log("overallRating = " + avgRating);
+    const avgRating = await getTotalRatings(id); //fetch the overrall rating to display to the user:
+    const userRating = await getUserRating(id, req.session.user.username);
 
     const data = await spotifyApi.getAlbum(id); //pass data to render function
     res.render('pages/release', {
@@ -418,7 +448,8 @@ app.get('/release/:id', async (req, res, next) => {
       artist: data.body.artists[0].name,
       tracks: data.body.tracks,
       id,
-      avgRating
+      avgRating,
+      userRating
     });
   } catch (error) {
     console.error("Error:", error);
@@ -427,47 +458,19 @@ app.get('/release/:id', async (req, res, next) => {
   }
 });
 
-
-
 ///////////////////////////////////////////////////////////// RATE ROUTE
 app.post('/release/rate', async (req, res, next) => {
   const rating = req.body.rating;
   const album_id = req.body.albumID;
+  await rateAlbum(rating, album_id, req.session.user.username); //call rate album with rating and album_id
 
-  const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
-  const ratingExists = await db.oneOrNone(checkRating, [req.session.user.username, album_id]); //check if the rating exists
-
-  if (!ratingExists) //if rating does not exist, rate it!
-  {
-     const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
-      VALUES (
-          (SELECT username from users WHERE username = $1),
-          $2,
-          $3
-        )`;
-    console.log("Rating " + album_id + " with: " + insertRating, [req.session.user.username, album_id, rating]);
-    await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
-
-   //update the average rating in the release table:
-    const updateAverage = `
-      UPDATE release
-      SET overallRating = (
-        SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
-      )
-      WHERE release_id = $1`;
-    console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
-    await db.none(updateAverage, album_id);
-  }
-  else
-  {
-    console.log("User has already rated this page");
-    ///TODO add functionality for user to UPDATE their rating:
-  }
 //RE-render the page:
    try {
     const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
     const result = await db.oneOrNone(fetchRating, album_id);
-    const avgRating = result.overallrating;
+     const avgRating = result.overallrating;
+
+     const userRating = await getUserRating(album_id, req.session.user.username);
 
     console.log("overallRating = " + avgRating);
     const data = await spotifyApi.getAlbum(album_id);
@@ -481,7 +484,8 @@ app.post('/release/rate', async (req, res, next) => {
       artist: updatedAlbumBody.artists[0].name,
       tracks: updatedAlbumBody.tracks,
       id: album_id,
-      avgRating
+      avgRating,
+      userRating
 
     });
   } catch (error) {

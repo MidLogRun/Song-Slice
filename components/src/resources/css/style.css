@@ -4,12 +4,14 @@
     align-items: center;
   }
 
-  .btn {
-    background-color: #505050;
+
+
+  .btn  {
+    background-color: #FFD700;
     border-radius: 5px;
   }
 
-  .btn btn-primary {
+  .btn:hover {
     background-color: #FF0077;
     border-radius: 5px;
   }
@@ -23,9 +25,19 @@
   border: 2px solid #000;
   padding: 10px;
   margin: 10px;
-  height: 450px;
-  width: 400px;
+  height: 500x;
+  width: 500px;
+  display: flex;
+  flex-direction: column;
 }
+
+.rating-information{
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 10px;
+}
+
+
 
 .tracklist {
   margin-left: 20px; /* Adjust this value based on your preference */
@@ -96,7 +108,7 @@ header{
   border-spacing: 0px;
   border-width: 0px;
 
-  
+
   /* padding-left: 2%; */
 }
 
@@ -110,7 +122,7 @@ th{
 }
 tr{
   color:white;
-  
+
 
 }
 .album-details{
@@ -166,7 +178,7 @@ tr{
   background-color:#ff0077b3;
   border-radius: 10px;
   font-size: 10;
-  
+
 }
 
 
@@ -179,3 +191,34 @@ tr{
   align-self: center;
 }
 
+/*Typography: */
+.review-text{
+  color: #FF0077;
+  font-size: 25px;
+}
+
+.review-subtext{
+  color:#d8d8d8;
+
+}
+
+
+/*Star icon:*/
+.star-container{
+  position: relative;
+  display: inline-block;
+}
+
+.star-image{
+  width: 80px;
+}
+
+.star-number{
+   position: absolute;
+  top: 50%; /* Adjust the top position */
+  left: 50%; /* Adjust the left position */
+  transform: translate(-50%, -50%);
+  font-size: 15px; /* Adjust the font size of the number */
+  font-weight: bold;
+  color: #000;
+}

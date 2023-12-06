@@ -391,7 +391,7 @@ async function rateAlbum(rating, album_id, username)
 
 
 
-    console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
+    console.log("Updating ", album_id, " within release table : ", updateAverage, album_id);
     await db.none(updateAverage, album_id);
 
 
@@ -424,12 +424,12 @@ async function getUserRating(album_id, username)
 
 app.get('/release/:id', async (req, res, next) =>
 {
-   var id = req.params.id;
+   const id = req.params.id;
   try {
 
     //Is the album currently in our database?:
     const testQuery = 'SELECT * FROM release WHERE release_id = $1';
-    const release = await db.oneOrNone(testQuery, id);
+    const release = await db.oneOrNone(testQuery, [String(id)]);
 
     //if not:
     if (!release) {

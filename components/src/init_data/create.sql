@@ -23,12 +23,9 @@ CREATE TABLE song(
 
 DROP TABLE IF EXISTS review CASCADE;
 CREATE TABLE review(
-    review_id INT PRIMARY KEY,
     username VARCHAR(50) NOT NULL,
     release_id varchar(25),
-    title VARCHAR(50) NOT NULL,
-    summary TEXT,
-    rating INT CHECK (rating >= 1 and rating <= 5) NOT NULL,
+    summary text,
     CONSTRAINT FK_review_user FOREIGN KEY (username) REFERENCES users(username),
     CONSTRAINT FK_review_release FOREIGN KEY (release_id) REFERENCES release(release_id),
     CONSTRAINT UQ_user_release_review UNIQUE (username, release_id) -- Ensures that each user can only make one review per release

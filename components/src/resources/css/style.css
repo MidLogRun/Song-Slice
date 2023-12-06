@@ -18,6 +18,7 @@
 
   .album-container {
   display: flex;
+  /* flex-direction:  */
   align-items: flex-start;
 }
 
@@ -26,7 +27,8 @@
   padding: 10px;
   margin: 10px;
   height: 500x;
-  width: 500px;
+  width: 100%;
+  box-sizing: border-box;
   display: flex;
   flex-direction: column;
 }
@@ -101,7 +103,7 @@ header{
 .tracklist{
   border-radius: 5px;
   background-color: #5A5A5A;
-  width: 55vw;
+  width: 50%;
   border: 1px solid #2B2B2B;
   margin-top: 2%;
   border-collapse: separate;
@@ -127,9 +129,20 @@ tr{
 }
 .album-details{
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
+  margin-right: auto;
 }
+
+.album-image{
+  width: 40%;
+  height: auto;
+  flex-direction: column;
+
+}
+
+
+
 #album-name{
   color: white;
 }
@@ -202,6 +215,12 @@ tr{
 
 }
 
+.review-header {
+  color: #FF0077;
+  font-size: 25px;
+  text-align: center;
+}
+
 
 /*Star icon:*/
 .star-container{
@@ -214,11 +233,26 @@ tr{
 }
 
 .star-number{
-   position: absolute;
+  position: absolute;
   top: 50%; /* Adjust the top position */
   left: 50%; /* Adjust the left position */
   transform: translate(-50%, -50%);
   font-size: 15px; /* Adjust the font size of the number */
   font-weight: bold;
   color: #000;
+}
+
+/* Reviews: */
+.comment-card {
+
+    position: bottom right;
+    margin-top: 20px; /* Adjust the margin as needed */
+    padding: 15px;
+    background-color: rgb(255, 142, 142); /* Adjust the background color as needed */
+    border: 1px solid #000000; /* Adjust the border color as needed */
+    border-radius: 50px; /* Adjust the border radius as needed */
+  }
+
+.comment-p {
+  margin-bottom: 10px; /* Adjust the margin as needed */
 }

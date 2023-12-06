@@ -74,9 +74,8 @@ spotifyApi
   .clientCredentialsGrant() //we are using client credentials OAuth flow (no need to have redirect URI)
   .then(data =>
   {
-    console.log("spotifyApi data body: " + data.body);
+    console.log("Line 77 Spotify");
     spotifyApi.setAccessToken(data.body["access_token"]);
-
   })
   .catch(error =>
   {
@@ -387,14 +386,8 @@ async function rateAlbum(rating, album_id, username)
         SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
       )
       WHERE release_id = $1`; //updates the average rating in the release table
-
-
-
-
     console.log("Updating ", album_id, " within release table : ", updateAverage, album_id);
     await db.none(updateAverage, album_id);
-
-
 }
 
 async function getTotalRatings(album_id)
@@ -422,6 +415,14 @@ async function getUserRating(album_id, username)
 
 }
 
+async function getThreeReviews(album_id)
+{
+  var reviews = [];
+  const revQuery = `SELECT * FROM review WHERE release_id = $1 LIMIT 3`;
+  reviews = await db.any(revQuery, album_id);
+  return reviews;
+}
+
 app.get('/release/:id', async (req, res, next) =>
 {
    const id = req.params.id;
@@ -439,6 +440,8 @@ app.get('/release/:id', async (req, res, next) =>
     }
     const avgRating = await getTotalRatings(id); //fetch the overrall rating to display to the user:
     const userRating = await getUserRating(id, req.session.user.username);
+    const reviews = await getThreeReviews(id);
+    console.log("reviews: ", reviews);
 
     const data = await spotifyApi.getAlbum(id); //pass data to render function
     res.render('pages/release', {
@@ -449,7 +452,8 @@ app.get('/release/:id', async (req, res, next) =>
       tracks: data.body.tracks,
       id,
       avgRating,
-      userRating
+      userRating,
+      reviews
     });
   } catch (error) {
     console.error("Error:", error);
@@ -468,9 +472,12 @@ app.post('/release/rate', async (req, res, next) => {
    try {
     const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
     const result = await db.oneOrNone(fetchRating, album_id);
-     const avgRating = result.overallrating;
+    const avgRating = result.overallrating;
 
-     const userRating = await getUserRating(album_id, req.session.user.username);
+    const userRating = await getUserRating(album_id, req.session.user.username);
+
+    const reviews = await getThreeReviews(album_id);
+    console.log("reviews: ", reviews);
 
     console.log("overallRating = " + avgRating);
     const data = await spotifyApi.getAlbum(album_id);
@@ -485,16 +492,77 @@ app.post('/release/rate', async (req, res, next) => {
       tracks: updatedAlbumBody.tracks,
       id: album_id,
       avgRating,
-      userRating
-
+      userRating,
+      reviews
     });
   } catch (error) {
     console.error("Error fetching updated data from Spotify:", error);
     // Handle the error appropriately
     res.status(500).send("Internal Server Error");
   }
-
 });
+
+///////////////////////////////////////////////////GET REVIEW PAGE:
+app.get('/review', (req, res) =>
+{
+  const album_title = req.query.album_title;
+  const album_id = req.query.albumID;
+  try
+  {
+    console.log("album_title: ", album_title);
+    console.log("id: ", album_id);
+    res.render('pages/review',
+      { album_title, album_id });
+  } catch (error) {
+    console.error('Error rendering the reviews page: ', error);
+  }
+});
+
+async function insertReview(username, album_id, review)
+{
+  const prevQuery = `SELECT * FROM review WHERE username = $1 and release_id = $2`; ///
+  const prevReview = await db.oneOrNone(prevQuery, [username, album_id]);
+
+  if (prevReview)
+  {
+    //user has wrote a review for this album:
+    console.log("User has previously wrote a review for the album. User updates their current review");
+    const updateReview = `UPDATE review
+    SET summary = $1
+    WHERE release_id = $2 AND username = $3`;
+    console.log("Updating user ", username,  "'s review for ", album_id);
+    await db.none(updateReview, [review, album_id, username]);
+  }
+  else
+  {
+    const reviewQuery = `INSERT INTO review (username, release_id, summary)
+      VALUES (
+          (SELECT username from users WHERE username = $1),
+          (SELECT release_id from release WHERE release_id = $2),
+          $3
+        )`;
+    console.log("inserting review: \'", review, "\' into review table");
+    await db.none(reviewQuery, [username, album_id, review]);
+  }
+
+}
+
+app.post('/review', async (req, res) =>
+{
+  const album_id = req.body.album_id;
+  const review = req.body.review;
+  try
+  {
+    console.log("review: ", review);
+    await insertReview(req.session.user.username, album_id, review);
+    return res.redirect('/homepage');
+  } catch (error)
+  {
+    console.error('Error with review', error);
+  }
+});
+
+
 
 
 

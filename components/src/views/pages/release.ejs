@@ -6,82 +6,103 @@
   <div class="album-container">
     <%- include ('../partials/message') %>
     <% if (image) { %>
-      <div class="album-details">
+    <div class="album-details">
+      <div class="album-image">
         <img src="<%= image %>" alt="<%= albumName %> Image" class="card-img-top">
-        <!-- Rating information div-->
+        <!-- Rating information-->
         <div class="rating-information">
           <h3 class="review-text">Your Rating:</h1>
+            <p class="review-subtext">
+              <% if (userRating != null && userRating != 0) { %>
+            <div class="star-container"><img src="../../resources/img/star.png" alt="star icon" class="star-image">
+              <span class="star-number"><%= userRating %> </span>
+            </div>
+            <% } else { %>
+            What did you think of the album?
+            <% } %>
+            </p>
 
-           <p class="review-subtext">
-        <% if (userRating != null && userRating != 0) { %>
-          <div class="star-container"><img src="../../resources/img/star.png" alt="star icon" class="star-image">
-              <span class="star-number"><%= userRating %>  </span>
-          </div>
-        <% } else { %>
-          What did you think of the album?
-        <% } %>
-      </p>
-
-      <h3 class="review-text">Average Rating: </h1>
-         <p class="review-subtext">
-
-        <% if (avgRating != null && avgRating != 0) { %>
-           <div class="star-container"><img src="../../resources/img/star.png" alt="star icon" class="star-image">
-              <span class="star-number"> <%= avgRating %>  </span>
-          </div>
-
-        <% } else { %>
-          This album has no ratings yet. Be the first to rate it!
-        <% } %>
-      </p>
+            <h3 class="review-text">Average Rating: </h1>
+              <p class="review-subtext">
+                <% if (avgRating != null && avgRating != 0) { %>
+              <div class="star-container"><img src="../../resources/img/star.png" alt="star
+                                    icon" class="star-image">
+                <span class="star-number"> <%= avgRating %>
+                </span>
+              </div>
+              <% } else { %>
+              This album has no ratings yet. Be the first
+              to rate it!
+              <% } %>
+              </p>
+              <p class="review-text">Rate:</p>
+              <!-- Buttons: -->
+              <div class="btn-group" role="group">
+                <form action="/release/rate" method="post">
+                  <input type="hidden" name="albumID" value="<%=
+                                    id %>">
+                  <input type="hidden" name="albumBody" value="<%=
+                                    JSON.stringify(albumBody) %>">
+                  <button class="btn" id="homeButton1" name="rating" type="submit" value="1.0">1</button>
+                  <button class="btn" id="homeButton2" name="rating" type="submit" value="2.0">2</button>
+                  <button class="btn" id="homeButton3" name="rating" type="submit" value="3.0">3</button>
+                  <button class="btn" id="homeButton4" name="rating" type="submit" value="4.0">4</button>
+                  <button class="btn" id="homeButton5" name="rating" type="submit" value="5.0">5</button>
+                </form>
+              </div>
         </div>
 
-
-
- <p class="review-text">Rate:</p>
-      <!-- Buttons: -->
-          <div class="btn-group" role="group">
-
-            <form action="/release/rate" method="post">
-              <input type="hidden" name="albumID" value="<%= id %>">
-              <input type="hidden" name="albumBody" value="<%= JSON.stringify(albumBody) %>">
-              <button class="btn"  id="homeButton1" name="rating" type="submit" value="1.0">1</button>
-              <button class="btn"  id="homeButton2" name="rating" type="submit" value="2.0">2</button>
-              <button class="btn"  id="homeButton3" name="rating" type="submit" value="3.0">3</button>
-              <button class="btn"  id="homeButton4" name="rating" type="submit" value="4.0">4</button>
-              <button class="btn"  id="homeButton5" name="rating" type="submit" value="5.0">5</button>
-            </form>
-          </div>
-      </div>
-
-
+      </div> <!-- Close tag for album image-->
 
       <!-- Tracklist: -->
       <div class="tracklist">
+        <h1> <%= albumName %></h1>
         <table class="table">
           <!-- <thead>
             <th scope="col" ><h1 id = "album_name"><%=albumName%></h1></th>
             <th scope="col" class ="body-column"><h2 id ="artist_name"><%=artist%></h2></th>
           </thead> -->
           <tbody>
-            <%tracks.items.forEach((track, index) => { %>
-              <tr>
-                <th scope="row" id = "num"><%=index+1%>.</th>
-                <td id="song-name"><%=track.name%></td>
-              </tr>
+            <%tracks.items.forEach((track, index)=> { %>
+            <tr>
+              <th scope="row" id="num"><%=index+1%>.</th>
+              <td id="song-name"><%=track.name%></td>
+            </tr>
             <% }); %>
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
 
-      <!-- Other album information -->
+  <!-- Tracklist: -->
 
-    <% } else { %>
-      <p>No album available</p>
-    <% } %>
+
+  <div class="review">
+    <form action="/review" method="GET">
+      <input type="hidden" name="albumID" value="<%= id %>">
+      <button class="btn" name="album_title" type="submit" value="<%= albumName
+                                            %>">Write a review:</button>
+    </form>
+
+    <div class="comment-card">
+      <%reviews.forEach((review)=> { %>
+      <p><strong><%=review.username%>
+          said: </strong><%=review.summary%></p>
+      <% }); %>
+    </div>
+  </div>
+
+
+  <!-- Comment Section: -->
+
+
+  <% } else { %>
+  <p>No album available</p>
+  <% } %>
   </div>
 </main>
 
 
 <br>
-<%- include ('../partials/footer') %>
+<%- include ('../partials/footer')%>

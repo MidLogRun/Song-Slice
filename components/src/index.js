@@ -354,6 +354,41 @@ app.get('/homepage', async (req, res) =>
 
 /////////////// RELEASE ROUTE
 //5mwOo1zikswhmfHvtqVSXg for debug
+async function rateAlbum(rating, albumID)
+{
+  const checkRating = `SELECT * FROM user_to_release WHERE username = $1 AND release_id = $2 `;
+  const ratingExists = await db.oneOrNone(checkRating, [req.session.user.username, album_id]); //check if the rating exists
+
+  if (!ratingExists)
+  {
+     const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
+      VALUES (
+          (SELECT username from users WHERE username = $1),
+          $2,
+          $3
+        )`;
+    console.log("Rating " + album_id + " with: " + insertRating, [req.session.user.username, album_id, rating]);
+    await db.none(insertRating, [req.session.user.username, album_id, rating]); //insert the rating into the DB
+
+   //update the average rating in the release table:
+    const updateAverage = `
+      UPDATE release
+      SET overallRating = (
+        SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
+      )
+      WHERE release_id = $1`;
+    console.log("Updating " + album_id+ " within release table : " + updateAverage, album_id);
+    await db.none(updateAverage, album_id);
+  }
+  else
+  {
+    const updateRating = `UPDATE user_to_release (username,release_id, rating)
+      VALUES (
+        (SELECT username from users WHERE username = $1)
+      ) `;
+    }
+}
+
 app.get('/release/:id', async (req, res, next) => {
   try {
     var id = req.params.id;
@@ -457,18 +492,7 @@ app.post('/release/rate', async (req, res, next) => {
 
 });
 
-async function rateAlbum(rating, albumID)
-{
-  const checkIfRated = 'SELECT 1 FROM user_to_release WHERE release_id = $1';
-  const result = await db.query(checkIfRated, album_id);
 
-  if (result == null)//Check if the user has already reviewed this album
-  {
-    console.log("Rating album " + album_id + " with " + rating);
-    const rateQuery = 'INSERT INTO user_to_release (rating) VALUES ($1)';
-    await db.none(rateQuery, rateQuery);
-  }
-}
 
 //pass in item id as paramter
 //click on release to show average rating, so not shown on the home for each album (dont worry about it now)

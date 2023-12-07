@@ -57,7 +57,7 @@ const client_id = process.env.CLIENT_ID; //client id
 const client_secret = process.env.CLIENT_SECRET; //client secret
 //const auth_token = Buffer.from(`${client_id}:${client_secret}`, 'utf-8').toString('base64'); //Auth token to give to spotify
 
-const spotifyApi = new SpotifyWebAPi({
+var spotifyApi = new SpotifyWebAPi({
   clientId: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET
 });
@@ -70,17 +70,48 @@ const spotifyApi = new SpotifyWebAPi({
       "expires_in": 3600
     }
 */
-spotifyApi
-  .clientCredentialsGrant() //we are using client credentials OAuth flow (no need to have redirect URI)
-  .then(data =>
+
+function authenticateSpotifyApi()
+{
+  return spotifyApi
+    .clientCredentialsGrant() //we are using client credentials OAuth flow (no need to have redirect URI)
+    .then(data =>
+    {
+      console.log('The access token expires in ' + data.body['expires_in']);
+      console.log('The access token is ' + data.body['access_token']);
+      spotifyApi.setAccessToken(data.body['access_token']);
+    })
+    .catch(error =>
+    {
+      console.error("Something went wrong when retrieving an access token", error);
+    });
+}
+
+
+async function refreshToken()
+{
+  try
   {
-    console.log("Line 77 Spotify");
-    spotifyApi.setAccessToken(data.body["access_token"]);
-  })
-  .catch(error =>
+    await authenticateSpotifyApi();
+  } catch (error)
   {
-    console.error("Something went wrong when retrieving an access token", error);
-  })
+    console.error("Error refreshing access token", error);
+  }
+}
+
+
+async function startTimer() {
+  // Set an initial timer for authentication
+  await authenticateSpotifyApi();
+
+  // Set up a recurring timer for refreshing the token every 50 minutes
+  setInterval(async () => {
+    await refreshToken();
+  }, 50 * 60 * 1000); // 50 minutes in milliseconds
+}
+
+// Start the timer
+startTimer();
 
 
 /**************** */

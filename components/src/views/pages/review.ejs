@@ -2,12 +2,17 @@
 <%- include ('../partials/menu') %>
 
 <main>
-    <div>
-        <h1 class="review-text"><%= album_title%></h1>
+     <h1 class="review-header"> Review for: <%= album_title%></h1>
+   <% if (errorMessage){ %>
+    <div class="error-message"><p><%=errorMessage %></p></div>
+  <% } %>
+     <div class="revInput">
        <form action="/review" method="POST">
-        <textarea id="reviewInput" name="review" placeholder="Write your review..." cols="30" rows="10" maxlength="200"></textarea>
+        <textarea id="reviewInput" name="review" placeholder="Write your review (limit: 200 words):" cols="30" rows="10" maxlength="200"></textarea>
+        <br>
         <input type="hidden" name="album_id" value="<%=album_id%>">
-        <button type="btn">Submit Review</button>
+        <input type="hidden" name="album_title" value="<%=album_title%>">
+        <button type="btn" class="review-button">Submit Review</button>
        </form>
 
     </div>

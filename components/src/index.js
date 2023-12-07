@@ -467,10 +467,10 @@ async function getUserRating(album_id, username)
 
 }
 
-async function getThreeReviews(album_id)
+async function getReviews(album_id)
 {
   var reviews = [];
-  const revQuery = `SELECT * FROM review WHERE release_id = $1 LIMIT 3`;
+  const revQuery = `SELECT * FROM review WHERE release_id = $1`;
   reviews = await db.any(revQuery, album_id);
   return reviews;
 }
@@ -492,7 +492,7 @@ app.get('/release/:id', async (req, res, next) =>
     }
     const avgRating = await getTotalRatings(id); //fetch the overrall rating to display to the user:
     const userRating = await getUserRating(id, req.session.user.username);
-    const reviews = await getThreeReviews(id);
+    const reviews = await getReviews(id);
     console.log("reviews: ", reviews);
 
     const data = await spotifyApi.getAlbum(id); //pass data to render function
@@ -528,7 +528,7 @@ app.post('/release/rate', async (req, res, next) => {
 
     const userRating = await getUserRating(album_id, req.session.user.username);
 
-    const reviews = await getThreeReviews(album_id);
+    const reviews = await getReviews(album_id);
     console.log("reviews: ", reviews);
 
     console.log("overallRating = " + avgRating);
@@ -559,12 +559,13 @@ app.get('/review', (req, res) =>
 {
   const album_title = req.query.album_title;
   const album_id = req.query.albumID;
+  const errorMessage = req.query.errorMessage || null;
   try
   {
     console.log("album_title: ", album_title);
     console.log("id: ", album_id);
     res.render('pages/review',
-      { album_title, album_id });
+      { album_title, album_id, errorMessage });
   } catch (error) {
     console.error('Error rendering the reviews page: ', error);
   }
@@ -572,6 +573,11 @@ app.get('/review', (req, res) =>
 
 async function insertReview(username, album_id, review)
 {
+  //Don't insert empty reviews:
+  if (!review.trim()) {
+  console.log("Review is empty. Not inserting into the database.");
+  return;
+  }
   const prevQuery = `SELECT * FROM review WHERE username = $1 and release_id = $2`; ///
   const prevReview = await db.oneOrNone(prevQuery, [username, album_id]);
 
@@ -603,11 +609,21 @@ app.post('/review', async (req, res) =>
 {
   const album_id = req.body.album_id;
   const review = req.body.review;
+
+  if (!review.trim()) //do not insert empty reviews:
+    {
+      console.log("Review is empty. Skipping insertion and rendering page with error");
+    const errorMessage = "Please enter a non-empty review.";
+    const album_title = req.body.album_title;
+    return res.render('pages/review', { album_title, album_id, errorMessage });
+    }
+
   try
   {
     console.log("review: ", review);
     await insertReview(req.session.user.username, album_id, review);
-    return res.redirect('/homepage');
+
+    return res.redirect('/release/' + album_id);
   } catch (error)
   {
     console.error('Error with review', error);

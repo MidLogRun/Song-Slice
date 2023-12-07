@@ -251,8 +251,8 @@ app.post('/register', async (req, res) =>
      console.log("username is: " + user.username);
     req.session.user = user;
     //res updates
-    res.status(200).json({message: 'registered successfully'});
-    // res.json({status: 'success', message: 'Welcome!'});
+    // res.status(200).json({status: 'success', message: 'Welcome!'});
+    // res.json({message: 'Success'});
 
     req.session.save();
     return res.redirect('/homepage'); //redirect the user to the home page

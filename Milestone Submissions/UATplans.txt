@@ -1,45 +1,28 @@
-User Acceptance Testing:
-
-    Unit tests for API routes:
+UAT's:
 
 
-    Test(type: pos/neg)       Priority                Test desc                                                     Current state
-    login(pos & neg)            HIGH
-                               (week 2)        -User must match entry in DB                                                IN PROG
-                                               -Password must match corresponding hashed 
-                                                    password     
-                                               -If username does not exist in DB, prompt 
-                                                    to try again/register
 
+The first UAT test case will be a user can create a new account. This is the register feature.
+The data of this test will involve the user database. This is because we will need to check that the account does not already exist. The intput data will be a user's username and password.
+The environment will consist of giving people the ability to register an account with a desired username and password, both while the database is empty, and not. This can give us the proper results.
+If the dataase is empty, the user should be able to use any username and password. They will then be directed to the homepage, if successfull.
+If the database is not empty, we must insure that the user can not make a username that already exists in the database, as it represents their prexisting account, or someone else's taken name.
+If the user recieves a message about an already created username, they will be prompted to try again. If they revieve the message, and do not get access to the site, this is a success.
+(In addition to users testing, we will use chai tests)
+(The acceptance criteria is the valid credentials)
 
-            
-        Test(type: pos/neg)       Priority                Test desc                                                   Current state
-        register(pos & neg)       HIGH
-                                 (week 2)      -Password and confirm password match                                       IN PROG
-                                               -Username must be unique -> 
-                                                    Query the database for any existing 
-                                                    username that matches user input    
-                                               -User must enter a password -> 
-                                                    confirm_password field must match 
-                                                    each character in password field
-                                               -Email must contain an @ and a .
+The second UAT test will be for users logging in. This is the login feature.
+The data of this test will involved the user database. This is because we will need to test the two cases of: 1. user has an account; 2. user does not have an account.
+The environment will consist of giving people the ability to login. We must test the two cases. 
+For case one testing we will have the users information in the user database. If the user can successfully log in with the username and password, the test is a success (brought to homepage)
+For case two, testing will have have the users information not in the database (or empty database). When attempting to log in, the user should not be permited into the site/the homepage, but rather prompted with a message involving incorrect credentials. This will be a success.
+(In addition to the users testing, we will use chai tests)
+(The acceptance criteria is the valid credentials)
 
-
-        Test(type: pos/neg)       Priority                Test desc                                                   Current state
-        Post review(pos)           MID        -User can only have one rating and                                        Not Started
-                                 (week 3)           review per album posted at a 
-                                                    time                                  
-                                              - If user has not reviewed yet, check 
-                                                    that posted review appears in 
-                                                    Release_has_rateReview table  
-                                              -If user has already reviewed, check 
-                                                    that review is set to new review
-            
-
-        Test(type: pos/neg)       Priority                Test desc                                                   Current state
-       Logout(pos & neg)           MID           -Brings user to login page                                       
-                                 (week 3)        -Pressing login with blank fields acts as usual                        Not Started   
-                                                 - Fields should be blank
-                                              
-            
-
+The third UAT test will consist of successfully logging out, while saving information. This is the logout feature.
+The data of this test will involve the user database, as well as the release database.
+The envirnment will consist of a registered, logged in user. After rating an album, the user will log out. Logging out should send them to the login page with empty credentials to fill in.
+If so, this is successful thus far. Next, the user will sign in, and view the release they rated. The album should have the same rating as when they rated before logging out.
+If so, this is a successful test, as logging out still kept their user data, while signing them out.
+(In addition to user testing, we will use chai tests)
+(The acceptance criteria is having an account, rating an album, and logging out)

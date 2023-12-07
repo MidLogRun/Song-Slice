@@ -186,7 +186,7 @@ app.get('/login', (req, res) => {
 // login POST routine:
 app.post('/login', async (req, res) =>
 {
-  // res.status(200);
+
   const usrname = req.body.username;
   const password = req.body.password;
 
@@ -197,8 +197,6 @@ app.post('/login', async (req, res) =>
   {
     if (!usrname || !password)
     {
-      //added status here
-      // res.status(500);
       return res.render('pages/login', { message: 'Username and password are both required for login' });
     }
 
@@ -247,7 +245,7 @@ app.get('/register', (req, res) => {
 // register POST routine:
 app.post('/register', async (req, res) =>
 {
-   const userPassword = req.body.password;
+  const userPassword = req.body.password;
   const username = req.body.username;
 
   if (!userPassword)

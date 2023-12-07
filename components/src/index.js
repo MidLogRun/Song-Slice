@@ -48,7 +48,27 @@ const AlbumIDs = {
   Album27: '3nyszXBcbHA92HAB5NPsRL', //Sittin' By the Road
   Album28: '1dShPPoxXfzbjFO1jIHJZz', //Blue Rev
   Album29: '3mH6qwIy9crq0I9YQbOuDf', //Blonde
-  Album30: '4Coa8Eb9SzjrkwWEom963Q' //Puberty 2
+  Album30: '4Coa8Eb9SzjrkwWEom963Q', //Puberty 2
+  Album31: '2k8KgmDp9oHrmu0MIj4XDE', //Is This It
+  Album32: '0rPtXOMN42nsLDiShvGamv', //Yankee Hotel Foxtrot
+  Album33: '7D2NdGvBHIavgLhmcwhluK', //Yeezus
+  Album34: '392p3shh2jkxUxY2VHvlH8', //Channel Orange
+  Album35: '19bQiwEKhXUBJWY6oV3KZk', //Madvillainy
+  Album36: '5XpEKORZ4y6OrCZSKsi46A', //Norman Fucking Rockwell!
+  Album37: '64xtjfsPHNHch0CZ7fPTjS', //Carrie and Lowell
+  Album38: '0rmhjUgoVa17LZuS8xWQ3v', //Pure Heroine
+  Album39: '3DrgM5X3yX1JP1liNLAOHI', //The Suburbs
+  Album40: '79dL7FLiJFOO0EoehUHQBv', //Currents
+  Album41: '6Pp6qGEywDdofgFC1oFbSH', //Punisher
+  Album42: '5rcJ5xCMYYLCgGilFDKRZl', //Stranger in the Alps
+  Album43: '2tm3Ht61kqqRZtIYsBjxEj', //Pure Heroine
+  Album44: '0E4xv5gPjykrwBgBZzI8XG', //Back to Black
+  Album45: '5WupqgR68HfuHt3BMJtgun', //Goodbye Yellow Brick Road
+  Album46: '5zi7WsKlIiUXv09tbGLKsE', //Igor
+  Album47: '5SbcupirEParczvqqyUPXL', //The Moon & Antarctica
+  Album48: '0Cuqhgy8vm96JEkBY3polk', //Titanic Rising
+  Album49: '5iVEe1GHMtvUHwwqArThFa', //And Then Nothing turned Itself Inside-Out
+  Album50: '0e9GjrztzBw8oMC6n2CDeI' //the record
 };
 
 /******** Section 1.5 */
@@ -325,7 +345,7 @@ app.get('/logout', (req, res) =>
 //Spotify Get Albums:
 //https://api.spotify.com/v1/albums
 //Function that returns 4 random ids from the bank of AlbumIDs above
-function randomFourAlbums()
+function randomizeAlbums()
 {
   const albumIDsArray = Object.values(AlbumIDs);
   const maxAlbums = 4;
@@ -336,9 +356,9 @@ function randomFourAlbums()
     const j = Math.floor(Math.random() * (i + 1));
     [cloneAlbumIDs[i], cloneAlbumIDs[j]] = [cloneAlbumIDs[j], cloneAlbumIDs[i]]
   }
-    const selectedAlbumIDs = cloneAlbumIDs.slice(0, maxAlbums); //4 random ids
-
-    return selectedAlbumIDs;
+   // const selectedAlbumIDs = cloneAlbumIDs.slice(0, maxAlbums); //30
+  //  return selectedAlbumIDs;
+  return cloneAlbumIDs;
 }
 
 
@@ -362,7 +382,7 @@ app.get('/home', (req, res) => {
 app.get('/homepage', async (req, res) =>
 {
   var images = [], names = [], artists = [];
-  const IDs = randomFourAlbums(); //Array of four random IDs from bank above
+  const IDs = randomizeAlbums(); //Array of random IDs from bank above
 
   try
   {

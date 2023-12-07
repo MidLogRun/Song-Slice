@@ -195,10 +195,7 @@ app.post('/login', async (req, res) =>
     req.session.user = user;
     req.session.save();
 
-    //res.json({status: 'Login success!', message: 'Welcome!'});
 
-    //added
-    // res.status(200); 
     return res.redirect('/homepage');
 
 
@@ -255,10 +252,12 @@ app.post('/register', async (req, res) =>
     // res.json({message: 'Success'});
 
     req.session.save();
+    res.status(200);
     return res.redirect('/homepage'); //redirect the user to the home page
 
   } catch (error) {
     console.error('Error saving user info: ', error);
+    res.status
     res.render('pages/register',{message: 'An error occurred while registering the user.'})
   }
 });

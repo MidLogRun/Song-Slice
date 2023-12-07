@@ -1,2 +1,33 @@
-~~~Meeting 1 Notes (11/07/23)~~~
-- Create one documnt per team, within the molestones folder in the 
+~~~ Meeting 1 Notes (11/07/23) ~~~
+- Create one document per team, within the milestones folder in the project directory, that describes how, at least, 3 features within your finished product will be tested.
+- The test plans should include specific test cases (user acceptance test cases) that describe the data and the user activity that will be executed in order to verify proper functionality of the feature.
+- The test plans should include a description of the test data that will be used to test the feature
+- The test plans should include a description of the test environment that will be used to test the feature.
+- The test plans should include a description of the test results that will be used to test the feature.
+- The test plans should include information about the user acceptance testers.
+
+~~~ Meeting 2 Notes (11/1?/23) ~~~
+To Dos:
+- Before fall break; storyboard detailed, assignees, user acceptance criteria, user acceptance document look at UAD templates for testing/creating an account
+- Need another column for them - acceptance criteria (specify what is expected for that scenario - throw error if unsuccessful)
+- Another column - test scenario with automated test 
+- UAD document in tabular form
+- "Create a simple app that works well. start simple. make sure it all works well"
+    with init data ins/create - have drop tables (with nodemon), that way when testing with nodemon it refreshes our data
+Answers to questions asked:
+- How to access or go about providing a URL?
+    - Provide a local host URL
+
+~~~ Meeting 3 Notes (11/29/23) ~~~
+- Researching spotify API (majority done over thanksgiving)
+- Discussed goals and updated project storyboard (over Thanksgiving)
+- Updated home page
+- Prioritized creating rating over review
+- Project report
+What’s left to do:
+- API set up
+- Populate our homepage
+- Review release page
+- Profile page (icebox)
+
+~~~ Meeting 4 Notes (12/06/23) ~~~

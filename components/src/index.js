@@ -104,6 +104,7 @@ function authenticateSpotifyApi()
     .catch(error =>
     {
       console.error("Something went wrong when retrieving an access token", error);
+      throw error;
     });
 }
 
@@ -115,19 +116,28 @@ async function refreshToken()
     await authenticateSpotifyApi();
   } catch (error)
   {
-    console.error("Error refreshing access token", error);
+    console.error("Error refreshing access token", error.message || error);
   }
 }
 
 
-async function startTimer() {
-  // Set an initial timer for authentication
-  await authenticateSpotifyApi();
+async function startTimer()
+{
+  try
+  {
+    await authenticateSpotifyApi();
 
-  // Set up a recurring timer for refreshing the token every 50 minutes
-  setInterval(async () => {
-    await refreshToken();
-  }, 50 * 60 * 1000); // 50 minutes in milliseconds
+    // Set up a recurring timer for refreshing the token every 50 minutes
+    setInterval(async () =>
+    {
+      await refreshToken();
+    }, 60 * 60 * 1000); // 50 minutes in milliseconds
+  } catch (error)
+  {
+    console.error("Error starting the timer: ", error.message || error);
+  }
+  // Set an initial timer for authentication
+
 }
 
 // Start the timer
@@ -150,11 +160,13 @@ const db = pgp(dbConfig);
 
 // test your database
 db.connect()
-  .then(obj => {
+  .then(obj =>
+  {
     console.log('Database connection successful'); // you can view this message in the docker compose logs
     obj.done(); // success, release the connection;
   })
-  .catch(error => {
+  .catch(error =>
+  {
     console.log('ERROR:', error.message || error);
   });
 
@@ -186,20 +198,24 @@ app.use(
 // *****************************************************
 
 //Dummy Route:
-app.get('/welcome', (req, res) => {
-  res.json({status: 'success', message: 'Welcome!'});
+app.get('/welcome', (req, res) =>
+{
+  res.json({ status: 'success', message: 'Welcome!' });
 });
 
 // Redirect root URL to /login
-app.get('/', (req, res) => {
-    res.redirect('/login');
+app.get('/', (req, res) =>
+{
+  res.redirect('/login');
 });
 
 
 
 // //***********************LOGIN */
 // Login - GET route
-app.get('/login', (req, res) => {
+app.get('/login', (req, res) =>
+{
+  console.log("Rendering login:");
   res.render('pages/login');
 });
 
@@ -250,15 +266,16 @@ app.post('/login', async (req, res) =>
 
   } catch (error)
   {
-     console.error('Error during login', error.message);
-     res.status(500).json({ message: 'Login failed (Entered catch block)' });
+    console.error('Error during login', error.message);
+    res.status(500).json({ message: 'Login failed (Entered catch block)' });
   }
 });
 
 
 // //***********************REGISTER */
 // Register - GET route
-app.get('/register', (req, res) => {
+app.get('/register', (req, res) =>
+{
   res.render('pages/register');
 });
 
@@ -270,15 +287,16 @@ app.post('/register', async (req, res) =>
 
   if (!userPassword)
   {
-   return res.render('pages/register', { message: 'You need to enter a password'}); //correct path is?
+    return res.render('pages/register', { message: 'You need to enter a password' }); //correct path is?
   }
 
   if (!username)
   {
-   return res.render('pages/register', { message: 'You need to enter a username'}); //correct path is?
+    return res.render('pages/register', { message: 'You need to enter a username' }); //correct path is?
   }
 
-  try {
+  try
+  {
     const saltRounds = 10;
 
     const hashWord = await bcrypt.hash(userPassword, saltRounds); // Hash the password
@@ -300,15 +318,18 @@ app.post('/register', async (req, res) =>
 
     return res.redirect('/homepage'); //redirect the user to the home page
 
-  } catch (error) {
+  } catch (error)
+  {
     console.error('Error saving user info: ', error);
-    res.render('pages/register',{message: 'An error occurred while registering the user.'})
+    res.render('pages/register', { message: 'An error occurred while registering the user.' })
   }
 });
 
 // Authentication Middleware:
-const auth = (req, res, next) => {
-  if (!req.session.user) {
+const auth = (req, res, next) =>
+{
+  if (!req.session.user)
+  {
     // Default to login page if no user session:
     return res.redirect('/login');
   }
@@ -356,18 +377,20 @@ function randomizeAlbums()
     const j = Math.floor(Math.random() * (i + 1));
     [cloneAlbumIDs[i], cloneAlbumIDs[j]] = [cloneAlbumIDs[j], cloneAlbumIDs[i]]
   }
-   // const selectedAlbumIDs = cloneAlbumIDs.slice(0, maxAlbums); //30
+  // const selectedAlbumIDs = cloneAlbumIDs.slice(0, maxAlbums); //30
   //  return selectedAlbumIDs;
   return cloneAlbumIDs;
 }
 
 
 // //***********************HOME */
-app.get('/home', (req, res) => {
+app.get('/home', (req, res) =>
+{
   try
   {
     res.render('pages/home');
-  } catch (error) {
+  } catch (error)
+  {
     console.error('Error saving user info: ', error);
   }
 });
@@ -387,7 +410,8 @@ app.get('/homepage', async (req, res) =>
   try
   {
     //Can't use a regular loop since spotifyApi.getAlbums returns a promise:
-    await Promise.all(IDs.map(async (ID, index) => {
+    await Promise.all(IDs.map(async (ID, index) =>
+    {
       const data = await spotifyApi.getAlbum(ID);
       images[index] = data.body.images[0].url; // Grab the first image in the list (images[0])
       names[index] = data.body.name; // Name of the album
@@ -412,7 +436,7 @@ async function rateAlbum(rating, album_id, username)
 
   if (!ratingExists)
   {
-     const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
+    const insertRating = `INSERT INTO user_to_release (username, release_id, rating)
       VALUES (
           (SELECT username from users WHERE username = $1),
           $2,
@@ -428,18 +452,18 @@ async function rateAlbum(rating, album_id, username)
     SET rating = $1
     WHERE release_id = $2 AND username = $3`;
 
-    console.log("Updating user " + username +  "'s rating for " + album_id);
+    console.log("Updating user " + username + "'s rating for " + album_id);
     await db.none(updateRating, [rating, album_id, username]);
   }
   //regardless of what the user is doing, update the rating:
-   const updateAverage = `
+  const updateAverage = `
       UPDATE release
       SET overallRating = (
         SELECT AVG(rating) FROM user_to_release WHERE release_id = $1
       )
       WHERE release_id = $1`; //updates the average rating in the release table
-    console.log("Updating ", album_id, " within release table : ", updateAverage, album_id);
-    await db.none(updateAverage, album_id);
+  console.log("Updating ", album_id, " within release table : ", updateAverage, album_id);
+  await db.none(updateAverage, album_id);
 }
 
 async function getTotalRatings(album_id)
@@ -477,15 +501,17 @@ async function getReviews(album_id)
 
 app.get('/release/:id', async (req, res, next) =>
 {
-   const id = req.params.id;
-  try {
+  const id = req.params.id;
+  try
+  {
 
     //Is the album currently in our database?:
     const testQuery = 'SELECT * FROM release WHERE release_id = $1';
     const release = await db.oneOrNone(testQuery, [String(id)]);
 
     //if not:
-    if (!release) {
+    if (!release)
+    {
       console.log("Inserting album " + id + " into database");
       const insertRelease = 'INSERT INTO release (release_id) VALUES ($1)';
       await db.none(insertRelease, id);
@@ -507,7 +533,8 @@ app.get('/release/:id', async (req, res, next) =>
       userRating,
       reviews
     });
-  } catch (error) {
+  } catch (error)
+  {
     console.error("Error:", error);
     // Handle the error appropriately
     res.status(500).send("Internal Server Error");
@@ -515,13 +542,15 @@ app.get('/release/:id', async (req, res, next) =>
 });
 
 ///////////////////////////////////////////////////////////// RATE ROUTE
-app.post('/release/rate', async (req, res, next) => {
+app.post('/release/rate', async (req, res, next) =>
+{
   const rating = req.body.rating;
   const album_id = req.body.albumID;
   await rateAlbum(rating, album_id, req.session.user.username); //call rate album with rating and album_id
 
-//RE-render the page:
-   try {
+  //RE-render the page:
+  try
+  {
     const fetchRating = 'SELECT overallRating FROM release WHERE release_id = $1';
     const result = await db.oneOrNone(fetchRating, album_id);
     const avgRating = result.overallrating;
@@ -547,7 +576,8 @@ app.post('/release/rate', async (req, res, next) => {
       userRating,
       reviews
     });
-  } catch (error) {
+  } catch (error)
+  {
     console.error("Error fetching updated data from Spotify:", error);
     // Handle the error appropriately
     res.status(500).send("Internal Server Error");
@@ -566,7 +596,8 @@ app.get('/review', (req, res) =>
     console.log("id: ", album_id);
     res.render('pages/review',
       { album_title, album_id, errorMessage });
-  } catch (error) {
+  } catch (error)
+  {
     console.error('Error rendering the reviews page: ', error);
   }
 });
@@ -574,9 +605,10 @@ app.get('/review', (req, res) =>
 async function insertReview(username, album_id, review)
 {
   //Don't insert empty reviews:
-  if (!review.trim()) {
-  console.log("Review is empty. Not inserting into the database.");
-  return;
+  if (!review.trim())
+  {
+    console.log("Review is empty. Not inserting into the database.");
+    return;
   }
   const prevQuery = `SELECT * FROM review WHERE username = $1 and release_id = $2`; ///
   const prevReview = await db.oneOrNone(prevQuery, [username, album_id]);
@@ -588,7 +620,7 @@ async function insertReview(username, album_id, review)
     const updateReview = `UPDATE review
     SET summary = $1
     WHERE release_id = $2 AND username = $3`;
-    console.log("Updating user ", username,  "'s review for ", album_id);
+    console.log("Updating user ", username, "'s review for ", album_id);
     await db.none(updateReview, [review, album_id, username]);
   }
   else
@@ -611,12 +643,12 @@ app.post('/review', async (req, res) =>
   const review = req.body.review;
 
   if (!review.trim()) //do not insert empty reviews:
-    {
-      console.log("Review is empty. Skipping insertion and rendering page with error");
+  {
+    console.log("Review is empty. Skipping insertion and rendering page with error");
     const errorMessage = "Please enter a non-empty review.";
     const album_title = req.body.album_title;
     return res.render('pages/review', { album_title, album_id, errorMessage });
-    }
+  }
 
   try
   {
@@ -641,6 +673,17 @@ app.post('/review', async (req, res) =>
 // *****************************************************
 // <!-- Section 5 : Start Server -->
 // *****************************************************
- module.exports = app.listen(3000, () => {
+
+// module.exports = app.listen(3000, () =>
+// {
+//   console.log('Server is listening on port 3000');
+// });
+
+//Chris solution:
+
+const server = app.listen(3000, () =>
+{
   console.log('Server is listening on port 3000');
 });
+
+module.exports = app;

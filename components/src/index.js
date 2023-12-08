@@ -91,6 +91,8 @@ var spotifyApi = new SpotifyWebAPi({
     }
 */
 
+
+
 function authenticateSpotifyApi()
 {
   return spotifyApi
@@ -186,6 +188,7 @@ app.use(
 // *****************************************************
 
 //Dummy Route:
+
 app.get('/welcome', (req, res) => {
   res.json({status: 'success', message: 'Welcome!'});
 });
@@ -242,6 +245,7 @@ app.post('/login', async (req, res) =>
     console.log("User logged in successfully");
 
     req.session.user = user;
+    // res.status(200);
     req.session.save();
 
 
@@ -641,6 +645,12 @@ app.post('/review', async (req, res) =>
 // *****************************************************
 // <!-- Section 5 : Start Server -->
 // *****************************************************
- module.exports = app.listen(3000, () => {
+//  module.exports = app.listen(3000, () => {
+//   console.log('Server is listening on port 3000');
+// });
+
+const server = app.listen(3000, () => {
   console.log('Server is listening on port 3000');
-});
+})
+
+module.exports = app;
